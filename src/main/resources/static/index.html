@@ -19,7 +19,7 @@
         <button id="send">Send</button>
 
         <p>Select an image and hit send:</p>
-        <input type="file" id="file" accept="image/*"/>
+        <input type="file" id="file" accept=".xtf,.xml,.itf"/>
 
         <button id="sendImage">Send Image</button>
     </div>
@@ -34,7 +34,9 @@
     const fileInput = document.getElementById("file");
     const sendImageButton = document.getElementById("sendImage");
 
-    const socket = new WebSocket("ws://localhost:8080/socket");
+    
+    const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/socket");
+    //const socket = new WebSocket("ws://localhost:8080/socket");
     socket.binaryType = "arraybuffer";
 
     socket.onopen = function (event) {
@@ -57,7 +59,14 @@
 
     sendImageButton.onclick = function (event) {
         let file = fileInput.files[0];
+        //console.log(file.name);
+        
+        if (socket.readyState === WebSocket.CLOSED) {
+            console.log("closed connection -> refresh browser");
+        }
+        
         sendMessage(file);
+        sendMessage(file.name);
         fileInput.value = null;
     };
 

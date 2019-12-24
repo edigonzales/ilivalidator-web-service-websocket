@@ -17,12 +17,15 @@ configurations {
 
 repositories {
 	mavenCentral()
+    maven { url "http://jars.interlis.ch/" }	
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    compile group: 'ch.interlis', name: 'ilivalidator', version: '1.11.2'
+		
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
