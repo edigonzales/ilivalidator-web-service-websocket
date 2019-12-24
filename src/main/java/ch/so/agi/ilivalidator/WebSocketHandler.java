@@ -67,6 +67,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         session.sendMessage(message);
     }
 
+    
+    // FIXME: Zuerst in eine data.tmp-Datei kopieren und anschliessend richtig umbenennen.
+    
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws IOException {
         System.out.println("New Binary Message Received @" +  new Date().toString());
