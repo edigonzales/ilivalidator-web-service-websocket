@@ -100,7 +100,7 @@
     const fileInput = document.getElementById("file");
     const sendFileButton = document.getElementById("btnSubmit");
     
-    const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/socket");
+    const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + window.location.pathname + "/socket");
     //const socket = new WebSocket("ws://localhost:8080/socket");
     socket.binaryType = "arraybuffer";
 
