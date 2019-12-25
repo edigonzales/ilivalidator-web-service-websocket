@@ -18,3 +18,24 @@ jobs:
       with:
         name: build
         path: build
+    - uses: actions/upload-artifact@v1
+      if: success()
+      with:
+        name: Dockerfile
+        path: Dockerfile
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build results
+        uses: actions/download-artifact@v1
+        with:
+          name: build
+      - name: Download build results
+        uses: actions/download-artifact@v1
+        with:
+          name: Dockerfile
+      - name: Export timestamp
+        run: export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
+      - name: Build docker image
+        run: docker build -t sogis/ilivalidator-web-service-websocket .
