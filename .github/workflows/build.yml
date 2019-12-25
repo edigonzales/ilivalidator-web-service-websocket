@@ -16,7 +16,6 @@ jobs:
       - name: Export timestamp
         run: export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
       - name: Build docker image
-        run: docker build -t sogis/ilivalidator-web-service-websocket .
         run: |
           docker pull sogis/ilivalidator-web-service-websocket:latest || true        
           docker build --pull --label ilivalidator-web-service-websocket.git_commit=$GITHUB_SHA --label ilivalidator-web-service-websocket.created=$CI_JOB_TIMESTAMP --cache-from sogis/ilivalidator-web-service-websocket:latest -t sogis/ilivalidator-web-service-websocket .
