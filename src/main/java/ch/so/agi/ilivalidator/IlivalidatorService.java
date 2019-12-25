@@ -24,7 +24,7 @@ public class IlivalidatorService {
     public synchronized boolean validate(String allObjectsAccessible, String doConfigFile, String inputFileName, String logFileName)
             throws IoxException, IOException {
         
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10001");
+        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
         Settings settings = new Settings();
