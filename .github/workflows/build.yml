@@ -17,8 +17,9 @@ jobs:
         run: export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
       - name: Build docker image
         run: |
+          export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)  
+          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker pull sogis/ilivalidator-web-service-websocket:latest || true        
           docker build --pull --label ilivalidator-web-service-websocket.git_commit=$GITHUB_SHA --label ilivalidator-web-service-websocket.created=$CI_JOB_TIMESTAMP --cache-from sogis/ilivalidator-web-service-websocket:latest -t sogis/ilivalidator-web-service-websocket .
           docker images
-          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker push sogis/ilivalidator-web-service-websocket:latest 
