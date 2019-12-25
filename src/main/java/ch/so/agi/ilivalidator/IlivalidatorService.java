@@ -21,10 +21,6 @@ import org.interlis2.validator.Validator;
 public class IlivalidatorService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
-    public void foo() {
-        System.out.println("**************");
-    }
-
     public synchronized boolean validate(String allObjectsAccessible, String doConfigFile, String inputFileName, String logFileName)
             throws IoxException, IOException {
         
@@ -33,8 +29,7 @@ public class IlivalidatorService {
 
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
-
-//        settings.setValue(Validator.SETTING_LOGFILE, logFileName);
+        settings.setValue(Validator.SETTING_LOGFILE, logFileName);
         
         if (allObjectsAccessible != null) {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
@@ -42,7 +37,6 @@ public class IlivalidatorService {
 
         boolean valid = Validator.runValidation(inputFileName, settings);
 
-        
         return valid;
     }
 }

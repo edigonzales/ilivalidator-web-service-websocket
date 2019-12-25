@@ -4,6 +4,8 @@ plugins {
 	id 'java'
 }
 
+apply from: "$rootDir/gradle/versioning.gradle"
+
 group = 'ch.so.agi.ilivalidator'
 
 sourceCompatibility = '8'
@@ -24,7 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    compile group: 'ch.interlis', name: 'ilivalidator', version: '1.11.2'
+    compile group: 'ch.interlis', name: 'ilivalidator', version: '1.11.3'
 		
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -35,3 +37,16 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+task deleteFilesJarDir(type: Delete) {
+    delete fileTree("${buildDir}/dependency/")//.listFiles()
+    delete file("${buildDir}/dependency/")
+}
+
+task unzipJar(type: Copy) {
+    from zipTree(file("${buildDir}/libs/ilivalidator-web-service-websocket-"+version+".jar"))
+    into file("${buildDir}/dependency/")
+}
+unzipJar.dependsOn(deleteFilesJarDir)
+bootJar.finalizedBy(unzipJar)
+

@@ -2,6 +2,7 @@ package ch.so.agi.ilivalidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,6 +18,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 import javax.websocket.OnError;
@@ -31,69 +33,67 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
 
     private static String FOLDER_PREFIX = "ilivalidator_";
 
+    private static String LOG_ENDPOINT = "log";
+    
     @Autowired
     IlivalidatorService ilivalidator;
 
     String filename;
     File file;
     
-//    @Override
-//    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-//        System.out.println("********** TRANSPORT ERROR ********");
-//    }
-
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-        System.out.println("New Text Message Received @" + new Date().toString());
-        System.out.println(session.getId());     
-        
-        System.out.println(message.toString());
-        
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {        
         filename = message.getPayload();
         
-        ilivalidator.foo(); 
-
+        // ilivalidator must know if it is ili1 or ili2.
+        Path copiedFile = Paths.get(file.getParent(), filename);
+        Files.copy(file.toPath(), copiedFile, StandardCopyOption.REPLACE_EXISTING);
         
-//        boolean valid = ilivalidator.validate(allObjectsAccessible, configFile, inputFileName, logFileName);
-//        try {
-//            log.info(file.getAbsolutePath());
-////            ilivalidator = new IlivalidatorService();
-////            boolean valid = ilivalidator.validate("false", "false", file.getAbsolutePath(), "asdf");
-//        } catch (IoxException e) {
-//            e.printStackTrace();
-//        }
-
+        session.sendMessage(new TextMessage("Received: " + filename));
         
-        session.sendMessage(message);
+        String logFilename = copiedFile.toFile().getAbsolutePath() + ".log";
+        log.info(logFilename);
+        
+        // There is no option for config file support in the GUI at the moment.
+        String configFile = "on";
+
+        // Run the validation.
+        String allObjectsAccessible = "true";
+        boolean valid;
+        try {
+            session.sendMessage(new TextMessage("Validating..."));
+            valid = ilivalidator.validate(allObjectsAccessible, configFile, copiedFile.toFile().getAbsolutePath(), logFilename);
+        } catch (IoxException | IOException e) {
+            e.printStackTrace();            
+            log.error(e.getMessage());
+            
+            TextMessage errorMessage = new TextMessage("An error occured while validating the data:" + e.getMessage());
+            session.sendMessage(errorMessage);
+            
+            return;
+        }
+
+        String resultText = "<span style='color:green;'>...validation done:</span>";
+        if (!valid) {
+            resultText = "<span style='color:red;'>...validation failed:</span>";
+        }
+        
+        String logFileId = copiedFile.getParent().getFileName().toString();
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a>");
+        session.sendMessage(resultMessage);
     }
-
-    
-    // FIXME: Zuerst in eine data.tmp-Datei kopieren und anschliessend richtig umbenennen.
     
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws IOException {
-        System.out.println("New Binary Message Received @" +  new Date().toString());
-        System.out.println(session.getId());
-        
-        System.out.println(message.toString());
-
-        ByteBuffer payload = message.getPayload();
-
         Path tmpDirectory = Files.createTempDirectory(FOLDER_PREFIX);
         
         // Ili1 muss itf als Endung haben, sonst wird falsch geprüft.
-        Path uploadFilePath = Paths.get(tmpDirectory.toString(), "data.itf"); 
-        
-        
-        System.out.println(uploadFilePath.toFile().getAbsolutePath());
-        
-        
+        Path uploadFilePath = Paths.get(tmpDirectory.toString(), "data.file"); 
+                
         FileChannel fc = new FileOutputStream(uploadFilePath.toFile().getAbsoluteFile(), false).getChannel();
-        fc.write(payload);
+        fc.write(message.getPayload());
         fc.close();
 
         file = uploadFilePath.toFile();
-        
-//        session.sendMessage(message);
     }
 }
