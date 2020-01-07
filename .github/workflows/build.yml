@@ -22,7 +22,7 @@ jobs:
       - name: Build docker image
         run: |
           echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-          docker pull sogis/ilivalidator-web-service-websocket:latest || true        
+          docker pull sogis/ilivalidator-web-service:latest || true        
           docker build --pull --label ilivalidator-web-service-websocket.git_commit=$GITHUB_SHA --cache-from sogis/ilivalidator-web-service:latest -t sogis/ilivalidator-web-service-websocket .
           docker images
           docker push sogis/ilivalidator-web-service:latest 
