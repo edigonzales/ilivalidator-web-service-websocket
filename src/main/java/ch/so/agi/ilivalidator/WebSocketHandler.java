@@ -45,7 +45,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {        
         filename = message.getPayload();
         
-        // ilivalidator must know if it is ili1 or ili2.
+        // ilivalidator must know if it is a ili1 or ili2 transfer file.
         Path copiedFile = Paths.get(file.getParent(), filename);
         Files.copy(file.toPath(), copiedFile, StandardCopyOption.REPLACE_EXISTING);
         
@@ -73,13 +73,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             return;
         }
 
-        String resultText = "<span style='color:green;'>...validation done:</span>";
+        String resultText = "<span style='background-color:#58D68D;'>...validation done:</span>";
         if (!valid) {
-            resultText = "<span style='color:red;'>...validation failed:</span>";
+            resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
         
         String logFileId = copiedFile.getParent().getFileName().toString();
-        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a>");
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
     }
     
@@ -87,7 +87,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws IOException {
         Path tmpDirectory = Files.createTempDirectory(FOLDER_PREFIX);
         
-        // Ili1 muss itf als Endung haben, sonst wird falsch geprüft.
+        // ilivalidator muss wissen, ob es sich um eine ili1- oder ili2-Datei handelt.
+        // Der Namen muss jedoch separat mitgeschickt werden. Gespeichert wird die Datei mit einem
+        // generischen Namen und anschliessend umbenannt.
         Path uploadFilePath = Paths.get(tmpDirectory.toString(), "data.file"); 
                 
         FileChannel fc = new FileOutputStream(uploadFilePath.toFile().getAbsoluteFile(), false).getChannel();

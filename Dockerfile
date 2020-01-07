@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11:latest
 RUN apt-get update && \
     apt-get install -y curl
 
-EXPOSE 8888
+EXPOSE 8080
 
 WORKDIR /home/ilivalidator
 

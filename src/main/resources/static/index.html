@@ -27,7 +27,7 @@
             padding: 0px;
             border: 0px solid black;
             color: rgb(33, 37, 41);
-        }   
+        }        
 		a {
             color: rgb(33, 37, 41);
             text-decoration: underline;
@@ -110,9 +110,7 @@
 
     socket.onmessage = function (event) {
         if (event.data instanceof ArrayBuffer) {
-            //addMessageToWindow('Got File:');
         } else {
-            //addMessageToWindow(`Got Message: ${event.data}`);
             addMessageToWindow(`${event.data}`);
         }
     };
@@ -134,7 +132,8 @@
         // Die Datei "verschwindet" bereits in Tomcat und kommt ja eben nicht bis zur
         // Anwendung.
         
-        // This works only if the work on the server side is done synchronously.
+        // This works only if the handling on the server side is done synchronously. 
+        // Seems to work. Tested with large datasets.
         sendMessage(file);
         sendMessage(file.name);
         fileInput.value = null;
@@ -155,12 +154,5 @@
         	document.getElementById("btnSubmit").disabled = false;
         }
     }
-
-    /*
-    function addImageToWindow(image) {
-        let url = URL.createObjectURL(new Blob([image]));
-        messageWindow.innerHTML += `<img src="${url}"/>`
-    }
-    */
 </script>
 </html>
