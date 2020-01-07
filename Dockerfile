@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11:latest
 RUN apt-get update && \
     apt-get install -y curl
 
-EXPOSE 8080
+EXPOSE 8888
 
 WORKDIR /home/ilivalidator
 
@@ -18,4 +18,4 @@ USER 1001
 
 ENTRYPOINT ["java","-cp","app:app/lib/*","ch.so.agi.ilivalidator.IlivalidatorWebServiceApplication"]
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl http://localhost:8080/actuator/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl http://localhost:8888/actuator/health
