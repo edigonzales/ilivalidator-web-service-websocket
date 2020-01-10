@@ -26,7 +26,6 @@ public class IntegrationTests {
     @LocalServerPort
     private String port;
     
-    private String DEFAULT_ENDPOINT = "ws://localhost:"+port+"/ilivalidator";
 
 
     @BeforeAll
@@ -36,8 +35,11 @@ public class IntegrationTests {
 
     @Test
     public void testGetLog() throws Exception {
-        logger.info(DEFAULT_ENDPOINT);
-        System.out.println(DEFAULT_ENDPOINT);
+        String defaultEndpoint =  "ws://localhost:"+port+"/ilivalidator";
+
+        logger.info(defaultEndpoint);
+        logger.info("port: " + port);
+        System.out.println(defaultEndpoint);
         Thread.sleep(100000);
     }
 
