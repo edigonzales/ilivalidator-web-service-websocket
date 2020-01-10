@@ -22,12 +22,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class IntegrationTests {
     Logger logger = LoggerFactory.getLogger(IntegrationTests.class);
 
-
     @LocalServerPort
     private String port;
     
-
-
     @BeforeAll
     public static void setup() {
         //SpringApplication.run(IlivalidatorWebServiceApplication.class, new String[0]);
