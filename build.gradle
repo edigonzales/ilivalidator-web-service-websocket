@@ -2,11 +2,15 @@ plugins {
 	id 'org.springframework.boot' version '2.2.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
+    id "com.bmuschko.docker-remote-api" version "6.1.2"
+    id "org.unbroken-dome.test-sets" version "2.1.1"    	
 }
 
 apply from: "$rootDir/gradle/versioning.gradle"
 
 group = 'ch.so.agi.ilivalidator'
+
+description = """ilivalidator web service"""
 
 sourceCompatibility = '8'
 
@@ -20,33 +24,54 @@ configurations {
 }
 
 repositories {
+	jcenter()
 	mavenCentral()
-    maven { url "http://jars.interlis.ch/" }	
+    maven { url "http://jars.interlis.ch/" }
+    maven { url "http://repo.maven.apache.org/maven2" }	
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'commons-io:commons-io:2.6'	
     implementation 'ch.interlis:ilivalidator:1.11.3'
+    implementation "org.jgrapht:jgrapht-core:1.3.1" // for custom functions
+    implementation 'ch.interlis:ili2db:4.3.2' // for custom functions
 
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
-
-    compile "org.jgrapht:jgrapht-core:1.3.1" // for custom functions
-    compile 'ch.interlis:ili2db:4.3.2' // for custom functions
+    customFunctionsDeps "ch.so.agi.ilivalidator:ilivalidator-custom-functions:1.0.17"
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+    testImplementation 'org.jsoup:jsoup:1.12.1'	
 }
 
 test {
 	useJUnitPlatform()
+    failFast = true
+    testLogging {
+        showStandardStreams = true
+    }	
 }
 
+task deleteFilesLibsExt(type: Delete) {
+    delete fileTree('src/main/resources/libs-ext/') {
+        include '**.jar'
+    }
+}
+
+task copyToLibsExt(type: Copy) {
+    from configurations.customFunctionsDeps
+    into "src/main/resources/libs-ext/"
+}
+copyToLibsExt.dependsOn(deleteFilesLibsExt)
+build.dependsOn(copyToLibsExt)
+classes.dependsOn(copyToLibsExt)
+
 task deleteFilesJarDir(type: Delete) {
-    delete fileTree("${buildDir}/dependency/")//.listFiles()
+    delete fileTree("${buildDir}/dependency/")
     delete file("${buildDir}/dependency/")
 }
 
