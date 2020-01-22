@@ -103,9 +103,8 @@ public class IntegrationTests {
     }
 
     @Test
-    public void testGetLog() throws Exception {
+    public void validation_Ok_ili1() throws Exception {
         String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
-        logger.info(endpoint);
 
         StandardWebSocketClient client = new StandardWebSocketClient();
         ClientSocketHandler clientHandler = new ClientSocketHandler();
@@ -122,28 +121,43 @@ public class IntegrationTests {
         
         String returnedMessage = clientHandler.getMessage();
         assertTrue(returnedMessage.contains("...validation done:"));
-        System.out.println(returnedMessage);
         
         Document document = Jsoup.parse(returnedMessage);
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        logger.info(link);
-        
         URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
-        logger.info("url: "+ logfileUrl);
-        
-        logger.info(servletContextPath);
-        
+                
         String logfileContents = null;
         try (InputStream in = logfileUrl.openStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
         }
-//        logger.info(logfileContents);
-        
-
-        
+        assertTrue(logfileContents.contains("Info: ...validation done")); 
     }
+    
+    @Test
+    public void validation_Fail_ili2() throws Exception {
+        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+
+        StandardWebSocketClient client = new StandardWebSocketClient();
+        ClientSocketHandler clientHandler = new ClientSocketHandler();
+        client.doHandshake(clientHandler, endpoint);
+
+        Thread.sleep(2000);
+        assertTrue(clientHandler.isConnected());
+
+        File file = new File("src/test/data/2457_Messen_vorher.xtf");
+        clientHandler.sendMessage(file);
+        clientHandler.sendMessage(file.getName());
+
+        Thread.sleep(60000);
+        
+        String returnedMessage = clientHandler.getMessage();
+        assertTrue(returnedMessage.contains("...validation failed:"));
+
+
+    }
+    
 
 }
