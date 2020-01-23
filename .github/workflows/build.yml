@@ -24,16 +24,13 @@ jobs:
         with:
           java-version: 1.8
       - name: Build with Gradle
-        run: ./gradlew clean build 
-      - name: Build docker image
+        run: ./gradlew clean build dockerTest
+      - name: Push docker image
         run: |
           export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
           echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker pull $DOCKER_ACCOUNT/$DOCKER_REPO:latest || true        
-          docker build --pull --label $DOCKER_REPO.git_commit=$GITHUB_SHA --label $DOCKER_REPO.build=1.0.$BUILD_NUMBER --label $DOCKER_REPO.created=$CI_JOB_TIMESTAMP --cache-from $DOCKER_ACCOUNT/$DOCKER_REPO:latest -t $DOCKER_ACCOUNT/$DOCKER_REPO:latest -t $DOCKER_ACCOUNT/$DOCKER_REPO:1.0.$BUILD_NUMBER .
           docker images
-          docker push $DOCKER_ACCOUNT/$DOCKER_REPO:latest 
-          docker push $DOCKER_ACCOUNT/$DOCKER_REPO:1.0.$BUILD_NUMBER
         env:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
           DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}

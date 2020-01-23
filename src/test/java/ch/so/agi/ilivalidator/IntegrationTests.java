@@ -16,15 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -33,19 +29,14 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IntegrationTests {
+public abstract class IntegrationTests {
     Logger logger = LoggerFactory.getLogger(IntegrationTests.class);
 
     @LocalServerPort
-    private String port;
+    protected String port;
     
     @Value("#{servletContext.contextPath}")
-    private String servletContextPath;
-
-    @BeforeAll
-    public static void setup() {}
+    protected String servletContextPath;
 
     public class ClientSocketHandler implements WebSocketHandler {
         Logger logger = LoggerFactory.getLogger(ClientSocketHandler.class);
@@ -127,6 +118,7 @@ public class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
+        System.out.println("port2: " + port);
         URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
                 
         String logfileContents = null;
@@ -152,7 +144,7 @@ public class IntegrationTests {
         clientHandler.sendMessage(file);
         clientHandler.sendMessage(file.getName());
 
-        Thread.sleep(90000);
+        Thread.sleep(120000);
         
         String returnedMessage = clientHandler.getMessage();
         assertTrue(returnedMessage.contains("...validation failed:"));
@@ -195,7 +187,7 @@ public class IntegrationTests {
         clientHandler.sendMessage(file);
         clientHandler.sendMessage(file.getName());
 
-        Thread.sleep(90000);
+        Thread.sleep(120000);
         
         String returnedMessage = clientHandler.getMessage();
         assertTrue(returnedMessage.contains("...validation done:"));
