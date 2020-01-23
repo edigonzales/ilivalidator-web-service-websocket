@@ -219,6 +219,4 @@ public class IntegrationTests {
         assertFalse(logfileContents.contains("Info: assume"));
         assertFalse(logfileContents.contains("Error"));
     }
-
-
 }
