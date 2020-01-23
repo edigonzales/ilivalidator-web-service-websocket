@@ -157,7 +157,6 @@ task stopDockerContainer(type: DockerStopContainer) {
     targetContainerId createDockerContainer.getContainerId()
 }
 
-/*
 def tags = ["latest", version]
 
 tags.each { tag ->
@@ -174,7 +173,6 @@ task pushDockerImages() {
         tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
     }    
 }
-*/
 
 dockerTest.dependsOn('startDockerContainer')
 dockerTest.finalizedBy('stopDockerContainer')

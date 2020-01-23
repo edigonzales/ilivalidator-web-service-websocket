@@ -31,6 +31,7 @@ jobs:
           echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker pull $DOCKER_ACCOUNT/$DOCKER_REPO:latest || true        
           docker images
+          ./gradlew pushDockerImages
         env:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
           DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
