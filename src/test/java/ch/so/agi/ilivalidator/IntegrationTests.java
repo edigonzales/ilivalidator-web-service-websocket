@@ -118,8 +118,15 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        System.out.println("port2: " + port);
-        URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
+        
+        // TODO: Seems to be a bigger challenge: Port is 0 while testing.
+        // Cause for this hack is the problem with the path that is not respected
+        // in the browser for for the log file. Some nginx stuff? It works with
+        // localhost.
+        link = link.replace(":0", ":"+port);
+
+//      URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
+        URL logfileUrl = new URL(link);
                 
         String logfileContents = null;
         try (InputStream in = logfileUrl.openStream()) {
@@ -153,7 +160,8 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
+        link = link.replace(":0", ":"+port);
+        URL logfileUrl = new URL(link);
                 
         String logfileContents = null;
         try (InputStream in = logfileUrl.openStream()) {
@@ -196,7 +204,8 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
+        link = link.replace(":0", ":"+port);
+        URL logfileUrl = new URL(link);
                 
         String logfileContents = null;
         try (InputStream in = logfileUrl.openStream()) {
