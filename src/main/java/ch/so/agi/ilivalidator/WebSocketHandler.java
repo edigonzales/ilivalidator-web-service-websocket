@@ -1,6 +1,8 @@
 package ch.so.agi.ilivalidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.socket.BinaryMessage;
@@ -24,6 +26,7 @@ import java.util.Date;
 import javax.websocket.OnError;
 import javax.websocket.Session;
 
+import org.apache.catalina.core.ApplicationContextFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +37,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     private static String FOLDER_PREFIX = "ilivalidator_";
 
     private static String LOG_ENDPOINT = "log";
+
+    @Value("#{servletContext.contextPath}")
+    protected String servletContextPath;
     
+    @Value("${server.port}")
+    protected String serverPort;
+
     @Autowired
     IlivalidatorService ilivalidator;
 
@@ -78,8 +87,24 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
         
+        
+        log.info(servletContextPath);
+        log.info(session.getUri().getScheme());
+        log.info(session.getLocalAddress().getHostName());
+        log.info(session.getLocalAddress().getHostString());
+        
+        String schema = session.getUri().getScheme().equalsIgnoreCase("wss") ? "https" : "http";
+        String host = session.getLocalAddress().getHostName();
+        
+        String port;
+        if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {
+            port = "";
+        } else {
+            port = serverPort;
+        }
+        
         String logFileId = copiedFile.getParent().getFileName().toString();
-        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+schema+"://"+host+":"+port+"/"+servletContextPath+"/"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
     }
     
