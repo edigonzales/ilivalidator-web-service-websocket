@@ -92,7 +92,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         String port;
         if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {
             port = "";
-        } else if (host.contains("so.ch")) { // FIXME: See how it is done in oereb-web-service. I guess there is some nginx magic needed.
+        } else if (host.contains("so.ch")) { 
+            // FIXME: Am liebsten sollte es mit relativen URL gehen. Da hatte ich aber Probleme im Browser/Client. Die haben nicht funktioniert in der GDI.
+            // Variante: Absolute URL im Client zusammenstöpseln. Ob das aber für die Tests funktioniert, muss man schauen...
             port = "";
         } else {
             port = ":"+serverPort;
