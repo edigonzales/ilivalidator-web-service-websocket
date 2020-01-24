@@ -196,7 +196,7 @@ Application-name: ilivalidator-web-service
 }
 task copyVersionTxt(type: Copy) {
     from "version.txt"
-    into "src/main/resources/templates/"
+    into "src/main/resources/static/"
 }
 copyVersionTxt.dependsOn(versionTxt)
 build.dependsOn(copyVersionTxt)
