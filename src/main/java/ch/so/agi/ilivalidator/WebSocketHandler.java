@@ -92,6 +92,8 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         String port;
         if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {
             port = "";
+        } else if (host.contains("so.ch")) { // FIXME: See how it is done in oereb-web-service. I guess there is some nginx magic needed.
+            port = "";
         } else {
             port = ":"+serverPort;
         }
