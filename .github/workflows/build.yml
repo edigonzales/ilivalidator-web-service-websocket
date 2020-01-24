@@ -29,7 +29,6 @@ jobs:
         run: |
           export CI_JOB_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
           echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-          docker pull $DOCKER_ACCOUNT/$DOCKER_REPO:latest || true        
           docker images
           ./gradlew pushDockerImages
         env:
