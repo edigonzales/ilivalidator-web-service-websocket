@@ -84,11 +84,10 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         
         log.info(servletContextPath);
         log.info(session.getUri().getScheme());
-        log.info(session.getLocalAddress().getHostName());
-        log.info(session.getLocalAddress().getHostString());
+        log.info(session.getUri().getHost());
         
         String schema = session.getUri().getScheme().equalsIgnoreCase("wss") ? "https" : "http";
-        String host = session.getLocalAddress().getHostName();
+        String host = session.getUri().getHost();
         
         String port;
         if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {

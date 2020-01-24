@@ -127,7 +127,7 @@ public abstract class IntegrationTests {
 
 //      URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
         URL logfileUrl = new URL(link);
-                
+                        
         String logfileContents = null;
         try (InputStream in = logfileUrl.openStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
