@@ -102,7 +102,6 @@
     const sendFileButton = document.getElementById("btnSubmit");
     
     const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + window.location.pathname + "/socket");
-    //const socket = new WebSocket("ws://localhost:8080/socket");
     socket.binaryType = "arraybuffer";
 
     socket.onopen = function (event) {
@@ -145,7 +144,6 @@
 
     function sendMessage(message) {
         socket.send(message);
-        //addMessageToWindow("Sent Message: " + message);
     }
 
     function addMessageToWindow(message) {

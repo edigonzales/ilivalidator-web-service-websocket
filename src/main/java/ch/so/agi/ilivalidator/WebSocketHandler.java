@@ -93,7 +93,8 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {
             port = "";
         } else if (host.contains("so.ch")) { 
-            // FIXME: Am liebsten sollte es mit relativen URL gehen. Da hatte ich aber Probleme im Browser/Client. Die haben nicht funktioniert in der GDI.
+            // FIXME: Am liebsten wäre es mir, wenn es mit relativen URL gehen würde. Da hatte ich aber Probleme im Browser/Client. Die haben nicht funktioniert in 
+            // der GDI-Umgebung.
             // Variante: Absolute URL im Client zusammenstöpseln. Ob das aber für die Tests funktioniert, muss man schauen...
             port = "";
         } else {
@@ -103,7 +104,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         
         String logFileId = copiedFile.getParent().getFileName().toString();
         TextMessage resultMessage = new TextMessage(resultText + " <a href='"+schema+"://"+host+port+"/"+servletContextPath+"/"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
-//        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");        
         session.sendMessage(resultMessage);
     }
     
