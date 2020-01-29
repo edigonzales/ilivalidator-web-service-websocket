@@ -7,6 +7,7 @@ The ilivalidator web service is a [spring boot](https://projects.spring.io/sprin
 ## TODO
 - Find out a smart way to deploy the extension functions models.
 - Publish `SO_FunctionsExt.ili` and `SO_Nutzungsplanung_20171118_Validierung_20190129.ili` in official INTERLIS repo. 
+- ...
 
 ## Features
 
