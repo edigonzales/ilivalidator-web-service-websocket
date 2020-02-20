@@ -42,13 +42,14 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     @Autowired
     IlivalidatorService ilivalidator;
 
-    HashMap<String, FileTuple> sessionFileMap = new HashMap<String, FileTuple>();
-//    String filename;
-    File file;
+    HashMap<String, File> sessionFileMap = new HashMap<String, File>();
     
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {        
+        File file = sessionFileMap.get(session.getId());
+        
         String filename = message.getPayload();
+        
         
         // ilivalidator must know if it is a ili1 or ili2 transfer file.
         Path copiedFile = Paths.get(file.getParent(), filename);
@@ -108,8 +109,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         TextMessage resultMessage = new TextMessage(resultText + " <a href='"+schema+"://"+host+port+"/"+servletContextPath+"/"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
         
-        
-        // TODO: remove from map
+        sessionFileMap.remove(session.getId());
     }
     
     @Override
@@ -127,11 +127,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
 
         File file = uploadFilePath.toFile();
         
-        FileTuple fileTuple = new FileTuple();
-        fileTuple.setFile(file);
-        
-        sessionFileMap.put(session.getId(), fileTuple);
-        
-        
+        sessionFileMap.put(session.getId(), file);
     }
 }
