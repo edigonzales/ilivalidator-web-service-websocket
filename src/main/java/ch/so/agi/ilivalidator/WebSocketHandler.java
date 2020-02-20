@@ -50,7 +50,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         
         String filename = message.getPayload();
         
-        
         // ilivalidator must know if it is a ili1 or ili2 transfer file.
         Path copiedFile = Paths.get(file.getParent(), filename);
         Files.copy(file.toPath(), copiedFile, StandardCopyOption.REPLACE_EXISTING);
@@ -83,7 +82,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         if (!valid) {
             resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
-        
         
         log.info(servletContextPath);
         log.info(session.getUri().getScheme());
