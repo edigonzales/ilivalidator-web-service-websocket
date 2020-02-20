@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +42,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     @Autowired
     IlivalidatorService ilivalidator;
 
-    String filename;
+    HashMap<String, FileTuple> sessionFileMap = new HashMap<String, FileTuple>();
+//    String filename;
     File file;
     
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {        
-        filename = message.getPayload();
+        String filename = message.getPayload();
         
         // ilivalidator must know if it is a ili1 or ili2 transfer file.
         Path copiedFile = Paths.get(file.getParent(), filename);
@@ -105,6 +107,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         String logFileId = copiedFile.getParent().getFileName().toString();
         TextMessage resultMessage = new TextMessage(resultText + " <a href='"+schema+"://"+host+port+"/"+servletContextPath+"/"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
+        
+        
+        // TODO: remove from map
     }
     
     @Override
@@ -120,6 +125,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         fc.write(message.getPayload());
         fc.close();
 
-        file = uploadFilePath.toFile();
+        File file = uploadFilePath.toFile();
+        
+        FileTuple fileTuple = new FileTuple();
+        fileTuple.setFile(file);
+        
+        sessionFileMap.put(session.getId(), fileTuple);
+        
+        
     }
 }
