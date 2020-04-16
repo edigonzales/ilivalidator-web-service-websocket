@@ -85,7 +85,7 @@ Error: line 457: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDo
 ```
 
 ### AREA-Bedingung für Lärmempfindlichkeit
-Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Es wird nur festgestellt, dass die AREA-Bedingung verletzt wird. Um die genaue Verortung feststellen zu können, muss eine Drittsoftware (z.B. QGIS mit Topology-Checker) verwendet werden.
+Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Es wird nur festgestellt, dass die AREA-Bedingung verletzt wird. Um die genaue Verortung feststellen zu können, muss eine Drittsoftware (z.B. QGIS mit Topology-Checker) verwendet werden. Die in der Fehlermeldung angezeigte Objekt-ID (tid) ist irreführend. Die tatsächlichen Fehler sind in der Regel bei anderen Objekten.
 
 Fehlermeldung:
 ```
