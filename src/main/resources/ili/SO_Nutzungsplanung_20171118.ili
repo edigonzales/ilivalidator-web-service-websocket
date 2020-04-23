@@ -627,6 +627,8 @@ VERSION "2017-11-18"  =
 				OR
 				Typ_Kt == #N820_kantonal_geschuetztes_Kulturobjekt
 				OR
+				Typ_Kt == #N821_kommunal_geschuetztes_Kulturobjekt				
+				OR
 				Typ_Kt == #N899_weitere_punktbezogene_Festlegungen_NP
     		); 
     END; 
