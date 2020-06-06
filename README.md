@@ -56,6 +56,8 @@ Für die Validierung der Nutzungsplanung werden zusätzliche Prüfungen vorgenom
 - https://github.com/claeis/ilivalidator/issues/205
 - https://github.com/claeis/ili2c/issues/6
 
+Sowohl das Validierungsmodell wie auch das Funktionskopf-Modell `SO_FunctionsExt` sind in der Anwendung deployt und werden nicht via INTERLIS-Modellablage bezogen.
+
 ### Testing
 
 Since ilivalidator is heavily tested in its own project, there are only functional tests of the web service implemented.
