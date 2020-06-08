@@ -73,6 +73,9 @@ public class IlivalidatorService {
         }
 
         // Copy the ilivalidator custom functions jar files into temporary directory.
+        // Ilivalidator durchsucht automatisch das Verzeichnis wo die XTF-Datei liegt 
+        // nach Modellen. Siehe oben `Validator.SETTING_DEFAULT_ILIDIRS`. Mehr ist
+        // nicht notwendig.
         try {
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             Resource[] resources = resolver.getResources("classpath:libs-ext/*.jar");
@@ -112,7 +115,7 @@ public class IlivalidatorService {
         // file into the the transfer file folder.
         if (doConfigFile != null) {
             String modelName = getModelNameFromTransferFile(inputFileName);
-            log.info("model name: " + modelName);
+            log.info("Try to load config file for model: " + modelName);
 
             // This is the java pure way to load resources in a jar.
             // InputStream is = getClass().getResourceAsStream("dm01avch24lv95d.toml");
