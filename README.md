@@ -7,7 +7,7 @@ The ilivalidator web service is a [spring boot](https://projects.spring.io/sprin
 ## TODO
 - Find out a smart way to deploy the extension functions models.
 - Publish `SO_FunctionsExt.ili` and `SO_Nutzungsplanung_20171118_Validierung_20190129.ili` in official INTERLIS repo. 
-- ...
+- ....
 
 ## Features
 
@@ -81,4 +81,5 @@ TODO: Link to Openshift stuff.
 The ilivalidator configurations files (aka `toml` files) are part of the distributed application and cannot be changed or overriden at the moment. There can be only one configuration file per INTERLIS model.
 
 These configuration files can be found in the resource directory of the source tree.
+
 
