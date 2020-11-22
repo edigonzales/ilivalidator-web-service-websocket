@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:latest
+FROM adoptopenjdk:11.0.9.1_1-jre-hotspot
 
 RUN apt-get update && \
     apt-get install -y curl

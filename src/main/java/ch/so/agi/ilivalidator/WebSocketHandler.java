@@ -2,15 +2,27 @@ package ch.so.agi.ilivalidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import ch.interlis.iox.IoxException;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.model.AccessControlPolicy;
+import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
+import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectAclRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +50,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     
     @Value("${server.port}")
     protected String serverPort;
+    
+    @Value("${app.s3Bucket}")
+    private String s3Bucket;
 
     @Autowired
     IlivalidatorService ilivalidator;
@@ -62,12 +77,30 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         // There is no option for config file support in the GUI at the moment.
         String configFile = "on";
 
-        // Run the validation.
         String allObjectsAccessible = "true";
+
         boolean valid;
+        String key;
         try {
+            // Run the validation.
             session.sendMessage(new TextMessage("Validating..."));
             valid = ilivalidator.validate(allObjectsAccessible, configFile, copiedFile.toFile().getAbsolutePath(), logFilename);
+            
+            // Upload log file to S3.
+            log.info("log file: " + logFilename);
+            Region region = Region.EU_CENTRAL_1;
+            S3Client s3 = S3Client.builder().region(region).build();
+                    
+            String subfolder = new File(new File(logFilename).getParent()).getName();
+            String s3Logfilename = new File(logFilename).getName();
+            key = subfolder + "/" + s3Logfilename;
+            
+            log.info("Uploading object... " + key);
+            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(key).build(), new File(logFilename).toPath());
+            s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(key).acl(ObjectCannedACL.PUBLIC_READ).build());
+            log.info("Upload complete");
+            
+            s3.close();            
         } catch (IoxException | IOException e) {
             e.printStackTrace();            
             log.error(e.getMessage());
@@ -77,34 +110,14 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             
             return;
         }
-
+        
+        // Browser response.
         String resultText = "<span style='background-color:#58D68D;'>...validation done:</span>";
         if (!valid) {
             resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
         
-        log.info(servletContextPath);
-        log.info(session.getUri().getScheme());
-        log.info(session.getUri().getHost());
-        
-        String schema = session.getUri().getScheme().equalsIgnoreCase("wss") ? "https" : "http";
-        String host = session.getUri().getHost();
-        
-        String port;
-        if (serverPort.equalsIgnoreCase("80") || serverPort.equalsIgnoreCase("443") || serverPort.equalsIgnoreCase("") || serverPort == null) {
-            port = "";
-        } else if (host.contains("so.ch")) { 
-            // FIXME: Am liebsten wäre es mir, wenn es mit relativen URL gehen würde. Da hatte ich aber Probleme im Browser/Client. Die haben nicht funktioniert in 
-            // der GDI-Umgebung.
-            // Variante: Absolute URL im Client zusammenstöpseln. Ob das aber für die Tests funktioniert, muss man schauen...
-            port = "";
-        } else {
-            port = ":"+serverPort;
-        }
-        log.info(port);
-        
-        String logFileId = copiedFile.getParent().getFileName().toString();
-        TextMessage resultMessage = new TextMessage(resultText + " <a href='"+schema+"://"+host+port+"/"+servletContextPath+"/"+LOG_ENDPOINT+"/"+logFileId+"/"+filename+".log' target='_blank'>Download log file.</a><br/><br/>   ");
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+key+"' target='_blank'>Download log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
         
         sessionFileMap.remove(session.getId());

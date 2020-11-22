@@ -26,6 +26,11 @@ ilivalidator web service is in development state.
 
 For the current version of ilivalidator web service, you will need a JRE (Java Runtime Environment) installed on your system, version 1.8 or later.
 
+## Configuration
+See `application.properties`. 
+
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` must be set as ENV vars directly. Also for testing!
+
 ## Developing
 
 ilivalidator web service is build as a Spring Boot Application.
@@ -33,6 +38,9 @@ ilivalidator web service is build as a Spring Boot Application.
 `git clone https://github.com/sogis/ilivalidator-web-service-websocket.git` 
 
 Use your favorite IDE (e.g. [Spring Tool Suite](https://spring.io/tools/sts/all)) for coding.
+
+### Log files
+It uses S3 for storing the log files to be independent of the deployment: If we run more than one pod and the pods have on common volume, it is possible that the link to the log file after the validation will end on the pod that did not the validation. 
 
 ### Additional models
 
