@@ -136,7 +136,7 @@ task pullDockerImage(type: DockerPullImage) {
 task buildDockerImage(dependsOn: 'pullDockerImage', type: DockerBuildImage) {
     description = "Build docker image."
     inputDir = project.rootDir
-    //cacheFrom.add("sogis/ilivalidator-web-service:latest")    
+    cacheFrom.add("sogis/ilivalidator-web-service:latest")    
     images.add("sogis/ilivalidator-web-service:"+version.toString())
     images.add("sogis/ilivalidator-web-service:latest")
     labels = ["ilivalidator-web-service.created": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
