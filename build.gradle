@@ -133,7 +133,7 @@ task pullDockerImage(type: DockerPullImage) {
     image = "sogis/ilivalidator-web-service:latest"
 }
 
-task buildDockerImage(type: DockerBuildImage) {
+task buildDockerImage(dependsOn: 'pullDockerImage', type: DockerBuildImage) {
     description = "Build docker image."
     inputDir = project.rootDir
     //cacheFrom.add("sogis/ilivalidator-web-service:latest")    
