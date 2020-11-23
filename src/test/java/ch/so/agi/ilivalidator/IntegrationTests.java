@@ -118,14 +118,6 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        
-        // TODO: Seems to be a bigger challenge: Port is 0 while testing.
-        // Cause for this hack is the problem with the path that is not respected
-        // in the browser for for the log file. Some nginx stuff? It works with
-        // localhost.
-        link = link.replace(":0", ":"+port);
-
-//      URL logfileUrl = new URL("http://localhost:"+port+servletContextPath+"/"+link);
         URL logfileUrl = new URL(link);
                         
         String logfileContents = null;
@@ -160,7 +152,6 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        link = link.replace(":0", ":"+port);
         URL logfileUrl = new URL(link);
                 
         String logfileContents = null;
@@ -204,7 +195,6 @@ public abstract class IntegrationTests {
         Elements links = document.select("a[href]");
         
         String link = links.get(0).attr("href");
-        link = link.replace(":0", ":"+port);
         URL logfileUrl = new URL(link);
                 
         String logfileContents = null;
@@ -214,10 +204,5 @@ public abstract class IntegrationTests {
         }
         
         assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
-//        assertTrue(logfileContents.contains("Warning: line 5: SO_Nutzungsplanung_20171118.Rechtsvorschriften.Dokument: tid d3c20374-f6c5-48f9-8e1e-232b87a9d80a: invalid format of INTERLIS.URI value <34-Messen/Entscheide/34-36_45-E.pdf> in attribute TextImWeb"));
-//        assertTrue(logfileContents.contains("Info: additional model SO_FunctionsExt"));
-//        assertTrue(logfileContents.contains("Info: ...validation done"));
-//        assertFalse(logfileContents.contains("Info: assume"));
-//        assertFalse(logfileContents.contains("Error"));
     }
 }
