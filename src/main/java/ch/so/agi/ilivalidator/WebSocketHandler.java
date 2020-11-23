@@ -101,7 +101,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             log.info("Upload complete");
             
             s3.close();            
-        } catch (IoxException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();            
             log.error(e.getMessage());
             
