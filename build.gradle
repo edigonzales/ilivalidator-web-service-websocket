@@ -47,7 +47,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'commons-io:commons-io:2.6'  
-    implementation 'ch.interlis:ilivalidator:1.11.3'
+    //implementation 'ch.interlis:ilivalidator:1.11.3'
+    implementation 'ch.interlis:ilivalidator:1.11.9-SNAPSHOT'
     implementation "org.jgrapht:jgrapht-core:1.3.1" // for custom functions
     implementation 'ch.interlis:ili2db:4.3.2' // for custom functions
     implementation platform('software.amazon.awssdk:bom:2.15.33')
@@ -149,8 +150,8 @@ task createDockerContainer(dependsOn: 'buildDockerImage', type: DockerCreateCont
     targetImageId buildDockerImage.getImageId() 
     hostConfig.portBindings = ['8888:8888']
     exposedPorts = [new ExposedPort("tcp", [8888])]
-    withEnvVar('AWS_ACCESS_KEY_ID', System.getenv('AWS_ACCESS_KEY_ID'))
-    withEnvVar('AWS_SECRET_ACCESS_KEY', System.getenv('AWS_SECRET_ACCESS_KEY'))   
+    withEnvVar('AWS_ACCESS_KEY_ID', System.getenv('AWS_ACCESS_KEY_ID') ?: 'foo')
+    withEnvVar('AWS_SECRET_ACCESS_KEY', System.getenv('AWS_SECRET_ACCESS_KEY') ?: 'bar')   
 }
 
 task startDockerContainer(dependsOn: 'createDockerContainer', type: DockerStartContainer) { 
