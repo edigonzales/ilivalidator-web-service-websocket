@@ -85,10 +85,22 @@ Error: line 457: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDo
 ```
 
 ### AREA-Bedingung für Lärmempfindlichkeit
-Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Es wird nur festgestellt, dass die AREA-Bedingung verletzt wird. Um die genaue Verortung feststellen zu können, muss eine Drittsoftware (z.B. QGIS mit Topology-Checker) verwendet werden. Die in der Fehlermeldung angezeigte Objekt-ID (tid) ist irreführend. Die tatsächlichen Fehler sind in der Regel bei anderen Objekten.
+Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Häufig sind die Fehler dort zu finden, wo man die Grundnutzung kopierte und die Geometrien verschneiden muss.  
 
 Fehlermeldung:
 ```
-Error: line 178586: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 59BDF2E0-E5E7-49B9-B6BA-583BE13152C7: Set Constraint SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true.
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection overlap 3.2508012350263016E-4, coord1 (2612419.901, 1248771.194), coord2 (2612428.532, 1248767.551),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612419.220, 1248771.482),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612419.012, 1248771.573),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612375.134, 1248774.377),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612103.954, 1248963.905),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection overlap 1.261583826789453E-4, coord1 (2612155.987, 1248879.452), coord2 (2612158.396, 1248881.354),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612158.781, 1248881.590),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612103.954, 1248963.905),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612158.781, 1248881.590),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection overlap 4.7300282660083307E-4, coord1 (2612158.997, 1248881.716), coord2 (2612164.438, 1248883.562),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612364.145, 1248774.882),
+Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612375.134, 1248774.377),
+Error: Set Constraint SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true.
 
 ```
