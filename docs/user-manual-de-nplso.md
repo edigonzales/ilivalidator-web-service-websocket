@@ -85,7 +85,7 @@ Error: line 457: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDo
 ```
 
 ### AREA-Bedingung für Lärmempfindlichkeit
-Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Häufig sind die Fehler dort zu finden, wo man die Grundnutzung kopierte und die Geometrien verschneiden muss.  
+Die Geometrien sämtliche Lärmempfindlichkeitstypen müssen zusammen eine AREA bilden. Achtung: Löcher werden keine detektiert, nur Überlappungen. Häufig sind die Fehler dort zu finden, wo man die Grundnutzung kopierte und die Geometrien verschneiden musste.  
 
 Fehlermeldung:
 ```
