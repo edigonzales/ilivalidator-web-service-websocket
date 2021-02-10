@@ -112,6 +112,8 @@ public abstract class IntegrationTests {
         Thread.sleep(30000);
         
         String returnedMessage = clientHandler.getMessage();
+        System.out.println("returnedMessage: " + returnedMessage);
+        logger.info("returnedMessage: " + returnedMessage);
         assertTrue(returnedMessage.contains("...validation done:"));
         
         Document document = Jsoup.parse(returnedMessage);
@@ -188,9 +190,11 @@ public abstract class IntegrationTests {
         clientHandler.sendMessage(file);
         clientHandler.sendMessage(file.getName());
 
-        Thread.sleep(180000);
+        Thread.sleep(240000);
         
         String returnedMessage = clientHandler.getMessage();
+        System.out.println("returnedMessage: " + returnedMessage);
+        logger.info("returnedMessage: " + returnedMessage);
         assertTrue(returnedMessage.contains("...validation done:"));
 
         Document document = Jsoup.parse(returnedMessage);
