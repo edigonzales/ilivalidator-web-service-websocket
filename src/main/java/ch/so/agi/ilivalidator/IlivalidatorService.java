@@ -65,8 +65,13 @@ public class IlivalidatorService {
         System.setProperty("sun.net.client.defaultReadTimeout", readTimeout);
 
         Settings settings = new Settings();
-        settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
+        
+        if (getModelNameFromTransferFile(inputFileName).equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
+            settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
+        } else {
+            settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
+        }
         
         if (allObjectsAccessible != null) {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
