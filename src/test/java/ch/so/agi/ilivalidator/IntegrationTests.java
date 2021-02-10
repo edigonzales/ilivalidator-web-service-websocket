@@ -109,7 +109,7 @@ public abstract class IntegrationTests {
         clientHandler.sendMessage(file);
         clientHandler.sendMessage(file.getName());
 
-        Thread.sleep(10000);
+        Thread.sleep(30000);
         
         String returnedMessage = clientHandler.getMessage();
         assertTrue(returnedMessage.contains("...validation done:"));

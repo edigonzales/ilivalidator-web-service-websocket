@@ -14,7 +14,7 @@ VERSION "2021-02-09"  =
     =
         ALL OF Organisation;
     
-        !!@ name = xxxx
+        !!@ name = noorganisations
         !!@ ilivalid.msg = "no organisations allowed"
         SET CONSTRAINT INTERLIS.objectCount(ALL)==0;      
     
