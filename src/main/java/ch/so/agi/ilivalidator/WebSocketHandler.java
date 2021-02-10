@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,10 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             log.info("Upload complete");
             
             s3.close();            
+            
+            System.out.println(file.getParent());
+            
+            FileUtils.deleteDirectory(new File(file.getParent()));
         } catch (Exception e) {
             e.printStackTrace();            
             log.error(e.getMessage());
@@ -109,7 +114,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             session.sendMessage(errorMessage);
             
             return;
-        }
+        } 
         
         // Browser response.
         String resultText = "<span style='background-color:#58D68D;'>...validation done:</span>";
