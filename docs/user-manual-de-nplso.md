@@ -102,5 +102,11 @@ Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Interse
 Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612364.145, 1248774.882),
 Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: Intersection coord1 (2612375.134, 1248774.377),
 Error: Set Constraint SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true.
+```
 
+### Fläche ist kleiner 0.01 m2
+Für die Grundnutzung und die überlagernden Flächen wird geprüft, ob die Fläche grösser 0.01 m2 ist. Kleinere Flächen weisen auf "Restflächen" von Verschnitten hin. Es wird eine Warnung geloggt:
+
+```
+Warning: line 3207: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 68D23F2B-3035-4CAC-8B8F-DD20A3CEFDC7: Fläche der Geometrie ist kleiner 0.01 m2.
 ```
