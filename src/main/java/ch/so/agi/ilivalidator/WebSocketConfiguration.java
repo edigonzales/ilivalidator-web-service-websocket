@@ -3,6 +3,7 @@ package ch.so.agi.ilivalidator;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -13,13 +14,16 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 @Configuration
 @EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {
+    @Value("${app.maxBinaryMessageBufferSize}")
+    private int maxBinaryMessageBufferSize;
+    
     @Autowired
     WebSocketHandler webSocketHandler;
     
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxBinaryMessageBufferSize(1024000*200);
+        container.setMaxBinaryMessageBufferSize(1024000*maxBinaryMessageBufferSize);
         container.setMaxSessionIdleTimeout(TimeUnit.MINUTES.convert(60, TimeUnit.MILLISECONDS));   
         return container;
     }
