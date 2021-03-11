@@ -101,6 +101,8 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             TextMessage errorMessage = new TextMessage("An error occured while validating the data:" + e.getMessage());
             session.sendMessage(errorMessage);
             
+            FileUtils.deleteDirectory(copiedFile.toFile().getParentFile());
+
             return;
         } 
         
@@ -114,6 +116,8 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         session.sendMessage(resultMessage);
         
         sessionFileMap.remove(session.getId());
+        
+        FileUtils.deleteDirectory(copiedFile.toFile().getParentFile());
     }
     
     @Override
