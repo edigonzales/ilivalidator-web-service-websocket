@@ -654,6 +654,7 @@ VERSION "2017-11-18"  =
       /** Datum der Erfassung
        */
       Datum : MANDATORY INTERLIS.XMLDate;
+
     END Grundnutzung;
 
     CLASS Ueberlagernd_Flaeche =
