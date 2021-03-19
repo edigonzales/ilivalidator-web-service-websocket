@@ -10,5 +10,5 @@ check="warning"
 ["SO_Nutzungsplanung_20171118_Validierung_20190129.Nutzungsplanung_Validierung.v_Ueberlagernd_Flaeche.checkMinimumFlaeche"]
 check="warning"
 
-["SO_Nutzungsplanung_20171118_Validierung_20190129.Nutzungsplanung_Validierung.v_Erschliessung_Flaechenobjekt.checkMinimumFlaeche"]
+["SO_Nutzungsplanung_20171118_Validierung_20190129.Erschliessungsplanung_Validierung.v_Erschliessung_Flaechenobjekt.checkMinimumFlaeche"]
 check="warning"
