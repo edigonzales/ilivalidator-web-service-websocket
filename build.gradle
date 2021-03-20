@@ -55,7 +55,7 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
 
     //customFunctionsDeps "ch.so.agi.ilivalidator:ilivalidator-custom-functions:1.0.17"
-    customFunctionsDeps "ch.so.agi.ilivalidator:ilivalidator-custom-functions:1.1.33"
+    customFunctionsDeps "ch.so.agi.ilivalidator:ilivalidator-custom-functions:1.1.35"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

@@ -81,7 +81,6 @@ Fehlermeldung:
 Error: line 451: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: (325CA1F1-17F5-4F19-A2E4-ECD942DB6DCA <-> E9597D3A-90CD-4175-97B5-CFEAE56CB7BE) is part of a cycle: E9597D3A-90CD-4175-97B5-CFEAE56CB7BE,325CA1F1-17F5-4F19-A2E4-ECD942DB6DCA.
 Error: line 451: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: Set Constraint SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente.isValidDocumentsCycle is not true.
 Error: line 457: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: (E9597D3A-90CD-4175-97B5-CFEAE56CB7BE <-> 325CA1F1-17F5-4F19-A2E4-ECD942DB6DCA) is part of a cycle: E9597D3A-90CD-4175-97B5-CFEAE56CB7BE,325CA1F1-17F5-4F19-A2E4-ECD942DB6DCA.
-
 ```
 
 ### AREA-Bedingung für Lärmempfindlichkeit
@@ -109,4 +108,11 @@ Für die Grundnutzung und die überlagernden Flächen wird geprüft, ob die Flä
 
 ```
 Warning: line 3207: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 68D23F2B-3035-4CAC-8B8F-DD20A3CEFDC7: Fläche der Geometrie ist kleiner 0.01 m2.
+```
+
+### Linie ist kürzer 0.1 m
+Für die überlagernden Linien und die Linienobjekte der Erschliessung wird geprüft, ob die Länge der Geometrie grösser 0.1 m ist. Es wird eine Warnung geloggt:
+
+```
+Warning: line 1054: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Linie: tid 3484b06f-0e3f-4e50-8afd-34cf6904f19f: Länge der Geometrie ist kleiner 0.1 m.
 ```
