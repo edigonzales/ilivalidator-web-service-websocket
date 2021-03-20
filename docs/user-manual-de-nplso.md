@@ -116,3 +116,4 @@ Für die überlagernden Linien und die Linienobjekte der Erschliessung wird gepr
 ```
 Warning: line 1054: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Linie: tid 3484b06f-0e3f-4e50-8afd-34cf6904f19f: Länge der Geometrie ist kleiner 0.1 m.
 ```
+
