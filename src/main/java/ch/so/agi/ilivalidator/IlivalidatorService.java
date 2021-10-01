@@ -64,6 +64,9 @@ public class IlivalidatorService {
         System.setProperty("sun.net.client.defaultConnectTimeout", connectTimeout);
         System.setProperty("sun.net.client.defaultReadTimeout", readTimeout);
 
+        String userDefinedCacheFolder=System.getenv("ILI_CACHE");
+        System.out.println("*********************: " + userDefinedCacheFolder);
+        
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
         
