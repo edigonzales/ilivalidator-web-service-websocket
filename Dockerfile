@@ -11,14 +11,10 @@ ARG DEPENDENCY=build/dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /home/ilivalidator/app/lib
 COPY ${DEPENDENCY}/META-INF /home/ilivalidator/app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /home/ilivalidator/app
-#RUN chown -R 1001:0 /home/ilivalidator && \
 RUN chown -R 0 /home/ilivalidator && \
     chmod -R g=u /home/ilivalidator
 
 ENV ILI_CACHE=/home/ilivalidator
-
-#USER 1001
-
 
 ENTRYPOINT ["java","-XX:+UseParallelGC","-XX:MaxRAMPercentage=80.0","-cp","app:app/lib/*","ch.so.agi.ilivalidator.IlivalidatorWebServiceApplication"]
 
