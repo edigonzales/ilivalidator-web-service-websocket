@@ -15,8 +15,9 @@ COPY ${DEPENDENCY}/BOOT-INF/classes /home/ilivalidator/app
 RUN chown -R 0 /home/ilivalidator && \
     chmod -R g=u /home/ilivalidator
 
-#USER 1001
+ENV ILI_CACHE=/home/ilivalidator
 
+#USER 1001
 
 ENTRYPOINT ["java","-XX:+UseParallelGC","-XX:MaxRAMPercentage=80.0","-cp","app:app/lib/*","ch.so.agi.ilivalidator.IlivalidatorWebServiceApplication"]
 
