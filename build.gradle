@@ -169,23 +169,10 @@ task stopDockerContainer(type: DockerStopContainer) {
     targetContainerId createDockerContainer.getContainerId()
 }
 
-
-// TODO: since images is a set, we do not need a loop anymore.
-def tags = ["latest", version]
-
-tags.each { tag ->
-    def imageTag = tag.toString()
-    task "pushDockerImage_$imageTag"(type: DockerPushImage) {
-        description = "Push docker image to hub.docker.com: $imageTag"
-        images = ["sogis/ilivalidator-web-service:$imageTag"]
-    }
-}
-
-task pushDockerImages() {
-    description = "Push docker images to hub.docker.com."
-    dependsOn {
-        tasks.findAll { task -> task.name.startsWith('pushDockerImage_') }
-    }    
+task pushDockerImages(type: DockerPushImage) {
+    description = "Push docker images to hub.docker.com"
+    images.add("sogis/ilivalidator-web-service:"+version.toString())
+    images.add("sogis/ilivalidator-web-service:latest")
 }
 
 dockerTest.dependsOn('startDockerContainer')
