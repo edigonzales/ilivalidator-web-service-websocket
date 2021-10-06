@@ -68,10 +68,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         // There is no option for config file support in the GUI at the moment.
         String configFile = "on";
 
+        // Hardcode this b/c there's no support in the client.
+        // Must be a String.
         String allObjectsAccessible = "true";
 
         boolean valid;
-        String key;
+        String logKey;
+        String xtfLogKey;
         try {
             // Run the validation.
             session.sendMessage(new TextMessage("Validating..."));
@@ -84,11 +87,15 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
                     
             String subfolder = new File(new File(logFilename).getParent()).getName();
             String s3Logfilename = new File(logFilename).getName();
-            key = subfolder + "/" + s3Logfilename;
-            
-            log.info("Uploading object... " + key);
-            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(key).build(), new File(logFilename).toPath());
-            s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(key).acl(ObjectCannedACL.PUBLIC_READ).build());
+            logKey = subfolder + "/" + s3Logfilename;
+            String s3XtfLogfilename = new File(logFilename + ".xtf").getName();
+            xtfLogKey = subfolder + "/" + s3XtfLogfilename;
+  
+            log.info("Uploading objects... " + logKey + ", " + xtfLogKey);
+            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(logKey).build(), new File(logFilename).toPath());
+            s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(logKey).acl(ObjectCannedACL.PUBLIC_READ).build());
+            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(xtfLogKey).build(), new File(logFilename + ".xtf").toPath());
+            s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(xtfLogKey).acl(ObjectCannedACL.PUBLIC_READ).build());
             log.info("Upload complete");
             
             s3.close();            
@@ -98,7 +105,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             e.printStackTrace();            
             log.error(e.getMessage());
             
-            TextMessage errorMessage = new TextMessage("An error occured while validating the data:" + e.getMessage());
+            TextMessage errorMessage = new TextMessage("An error occured while validating the data:<br>" + e.getMessage());
             session.sendMessage(errorMessage);
             
             FileUtils.deleteDirectory(copiedFile.toFile().getParentFile());
@@ -112,7 +119,8 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
         
-        TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+key+"' target='_blank'>Download log file.</a><br/><br/>   ");
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+logKey+"' target='_blank'>Download log file.</a>"
+                + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+xtfLogKey+"' target='_blank'>Download XTF log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
         
         sessionFileMap.remove(session.getId());

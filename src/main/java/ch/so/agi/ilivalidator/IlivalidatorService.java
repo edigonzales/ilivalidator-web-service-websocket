@@ -66,6 +66,7 @@ public class IlivalidatorService {
         
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
+        settings.setValue(Validator.SETTING_XTFLOG, logFileName + ".xtf");
         
         if (getModelNameFromTransferFile(inputFileName).equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
             settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
@@ -73,7 +74,7 @@ public class IlivalidatorService {
             settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
         }
         
-        if (allObjectsAccessible != null) {
+        if (allObjectsAccessible.toLowerCase().equalsIgnoreCase("true")) {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
         }
 
