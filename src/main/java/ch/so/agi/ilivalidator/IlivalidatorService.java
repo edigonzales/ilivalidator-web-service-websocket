@@ -78,6 +78,8 @@ public class IlivalidatorService {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
         }
 
+        // TODO: delete
+        /*
         // Copy the ilivalidator custom functions jar files into temporary directory.
         // Ilivalidator durchsucht automatisch das Verzeichnis wo die XTF-Datei liegt 
         // nach Modellen. Siehe oben `Validator.SETTING_DEFAULT_ILIDIRS`. Mehr ist
@@ -99,6 +101,7 @@ public class IlivalidatorService {
             log.error(e.getMessage());
             log.error("Error while copying the ilivalidator custom functions jar files.");
         } 
+        */
         
         // Additional models, e.g. validation models (when they are not available elsewhere).
         try {
