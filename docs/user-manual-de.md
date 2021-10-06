@@ -33,3 +33,12 @@ Wurden bei der Validierung der Datei Fehler gefunden, ist die Meldung "...valida
 Unter gewissen Umständen kann es zu Unterbrüchen zwischen Browser und Validierungsserver kommen. In diesem Fall erscheint bei einer Aktion (z.B. "Submit"-Knopf drücken) die Meldung "Connection closed. Refresh Browser". In diesem Fall muss die Seite neu geladen werden und es sollte wieder die Melung "Connected" erscheinen.
 
 ![ilivalidator connection closed](./images/ilivalidator07.png)
+
+## Visualisierung der Fehler
+
+Neben der normalen Log-Datei steht ebenfalls die XTF-Log-Datei zum Download zur Verfügung ("Download XTF log file."). Diese kann dazu verwendet werden die Fehler im Erfassungssystem besser zu visualisieren. Achtung: Nicht jeder gefundende Fehler weist eine Koordinate auf, welche für die Visualisierung benötigt wird. Die XTF-Datei kann mit _ili2gpkg_ in eine GeoPackage-Dateiumgewandelt werden. _Ili2gpgk_ steht als Webservcie zur Verfügung: [https://geo.so.ch/ili2gpkg](https://geo.so.ch/ili2gpkg). Zusätzlich steht in QGIS ein Plugin zur Verfügung, welches die XTF-Datei direkt einlesen kann:
+
+![XTFLog Checker](./images/qgisplugin01.png)
+
+![QGIS XTF Log](./images/qgisplugin02.png)
+

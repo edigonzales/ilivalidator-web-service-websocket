@@ -169,10 +169,11 @@ public abstract class IntegrationTests {
         assertTrue(logfileContents.contains("Error: line 412: SO_Nutzungsplanung_20171118.Nutzungsplanung.Grundnutzung: tid 2d285daf-a5ab-4106-a453-58eef2e921ab: duplicate coord at (2599932.281, 1216063.38, NaN)"));
         assertTrue(logfileContents.contains("Error: line 140: SO_Nutzungsplanung_20171118.Nutzungsplanung.Typ_Ueberlagernd_Flaeche: tid 0723a0c8-46e4-4e4f-aba4-c75e90bece14: Attributwert Verbindlichkeit ist nicht identisch zum Objektkatalog: 'orientierend' - '6110'"));
         assertTrue(logfileContents.contains("Dokument 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/24-Brunnenthal/Reglemente/024_BZR.pdf' wurde nicht gefunden"));
-        // TODO fix when areArea logging is in production
-        //assertTrue(logfileContents.contains("Error: line 1177: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 0f55e390-9aba-4833-aaa5-c6b98fae7633: Set Constraint "));
+        assertTrue(logfileContents.contains("Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1]: Intersection coord1 (2600228.240, 1217472.518), tids 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1], 9b8a1966-1482-4b1f-b576-968f4246e80a/Geometrie[1]"));
+        assertTrue(logfileContents.contains("Error: Set Constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Nutzungsplanung_Validierung.v_Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true"));
+        assertTrue(logfileContents.contains("Info: validate set constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Rechtsvorschriften_Validierung.v_HinweisWeitereDokumente.isValidDocumentsCycle..."));
+        assertTrue(logfileContents.contains("Error: line 61: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: tid 6: self loop found: 95efebb8-24df-4462-9af1-15500e341f04"));       
         assertTrue(logfileContents.contains("Info: ...validation failed"));
-        //assertFalse(logfileContents.contains("Info: assume"));
     }
     
     @Test
