@@ -119,7 +119,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
         }
         
-        TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+logKey+"' target='_blank'>Download log file.</a>"
+        TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+logKey+"' target='_blank'>Download log file</a> / "
                 + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+xtfLogKey+"' target='_blank'>Download XTF log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
         

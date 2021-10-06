@@ -8,6 +8,7 @@ EXPOSE 8888
 WORKDIR /home/ilivalidator
 
 ARG DEPENDENCY=build/dependency
+#ARG DEPENDENCY=dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /home/ilivalidator/app/lib
 COPY ${DEPENDENCY}/META-INF /home/ilivalidator/app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /home/ilivalidator/app

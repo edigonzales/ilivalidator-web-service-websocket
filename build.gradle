@@ -2,7 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
-    id "com.bmuschko.docker-remote-api" version "6.1.2"
+    id "com.bmuschko.docker-remote-api" version "7.1.0"
+    id "com.dorongold.task-tree" version "2.1.0"
 }
 
 apply from: "$rootDir/gradle/versioning.gradle"
@@ -11,7 +12,8 @@ group = 'ch.so.agi.ilivalidator'
 
 description = """ilivalidator web service"""
 
-sourceCompatibility = '8'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 
 sourceSets {
@@ -37,8 +39,8 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "http://jars.interlis.ch/" }
-    maven { url "http://repo.maven.apache.org/maven2" } 
+    maven { url "http://jars.interlis.ch/"; allowInsecureProtocol true }
+    //maven { url "http://repo.maven.apache.org/maven2" } 
 }
 
 configurations.all {
@@ -68,7 +70,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.jsoup:jsoup:1.12.1' 
-    dockerTestCompile sourceSets.test.output          
+    dockerTestImplementation sourceSets.test.output          
 }
 
 test {
@@ -116,7 +118,8 @@ task dockerTest(type: Test) {
     mustRunAfter test
 }
 
-check.dependsOn dockerTest
+// Sonst wird dockerTest auch ausgeführt, wenn nur build(en).
+//check.dependsOn dockerTest
 
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
@@ -205,5 +208,5 @@ task copyVersionTxt(type: Copy) {
     into "src/main/resources/static/"
 }
 copyVersionTxt.dependsOn(versionTxt)
-build.dependsOn(copyVersionTxt)
-classes.dependsOn(copyVersionTxt)
+processResources.dependsOn(copyVersionTxt)
+//classes.dependsOn(copyVersionTxt)
