@@ -94,7 +94,7 @@ public abstract class IntegrationTests {
         }
     }
 
-    //@Test
+    @Test
     public void validation_Ok_ili1() throws Exception {
         String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
 
@@ -176,7 +176,7 @@ public abstract class IntegrationTests {
         assertTrue(logfileContents.contains("Info: ...validation failed"));
     }
     
-    //@Test
+    @Test
     public void validation_Ok_ili2() throws Exception {
         String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
 
