@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.2.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.5.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id "com.bmuschko.docker-remote-api" version "7.1.0"
     //id "com.dorongold.task-tree" version "2.1.0"
@@ -15,24 +15,15 @@ description = """ilivalidator web service"""
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
-
 sourceSets {
     dockerTest {
         java.srcDir "$projectDir/src/dockerTest/java"
-        //resources.srcDir "$projectDir/src/dockerTest/resources"    
         compileClasspath += main.output + test.output
         runtimeClasspath += main.output + test.output
     }
 }
 
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
-    customFunctionsDeps // TODO: delete
-    customFunctionsDeps.transitive = false // TODO: delete  
-    
+configurations {    
     dockerTestImplementation.extendsFrom testImplementation
     dockerTestRuntime.extendsFrom testRuntime    
 }
@@ -61,8 +52,6 @@ dependencies {
     implementation platform('software.amazon.awssdk:bom:2.15.33')
     implementation 'software.amazon.awssdk:s3'
 
-    //customFunctionsDeps "io.github.sogis:ilivalidator-custom-functions:1.1.47" // TODO: delete
-
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -78,23 +67,6 @@ test {
         showStandardStreams = true
     }   
 }
-
-// TODO: delete
-/*
-task deleteFilesLibsExt(type: Delete) {
-    delete fileTree('src/main/resources/libs-ext/') {
-        include '**.jar'
-    }
-}
-
-task copyToLibsExt(type: Copy) {
-    from configurations.customFunctionsDeps
-    into "src/main/resources/libs-ext/"
-}
-copyToLibsExt.dependsOn(deleteFilesLibsExt)
-build.dependsOn(copyToLibsExt)
-classes.dependsOn(copyToLibsExt)
-*/
 
 task deleteFilesJarDir(type: Delete) {
     delete fileTree("${buildDir}/dependency/")
@@ -210,4 +182,3 @@ task copyVersionTxt(type: Copy) {
 }
 copyVersionTxt.dependsOn(versionTxt)
 processResources.dependsOn(copyVersionTxt)
-//classes.dependsOn(copyVersionTxt)
