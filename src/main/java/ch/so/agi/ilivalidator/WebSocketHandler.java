@@ -112,7 +112,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
 
             return;
         } 
-        
+                
         // Browser response.
         String resultText = "<span style='background-color:#58D68D;'>...validation done:</span>";
         if (!valid) {
