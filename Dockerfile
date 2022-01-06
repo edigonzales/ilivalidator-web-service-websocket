@@ -1,18 +1,17 @@
-FROM eclipse-temurin:17_35-jdk as jre-build
-RUN jlink \
-    --compress=2 \
-    --no-header-files \
-    --no-man-pages \
-    --add-modules java.base,java.logging,java.xml,jdk.unsupported,java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument \
-    --output /javaruntime
+#FROM eclipse-temurin:17_35-jdk as jre-build
+#RUN jlink \
+#    --compress=2 \
+#    --no-header-files \
+#    --no-man-pages \
+#    --add-modules java.base,java.logging,java.xml,jdk.unsupported,java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument \
+#    --output /javaruntime
 
-FROM debian:bullseye-slim
-ENV JAVA_HOME=/opt/java/openjdk
-ENV PATH "${JAVA_HOME}/bin:${PATH}"
-COPY --from=jre-build /javaruntime $JAVA_HOME
+#FROM debian:bullseye-slim
+#ENV JAVA_HOME=/opt/java/openjdk
+#ENV PATH "${JAVA_HOME}/bin:${PATH}"
+#COPY --from=jre-build /javaruntime $JAVA_HOME
 
-#RUN apt-get update && \
-#    apt-get install -y curl
+FROM bellsoft/liberica-openjdk-alpine-musl:17.0.1-12
 
 EXPOSE 8888
 
@@ -31,5 +30,3 @@ ENV ILI_CACHE=/home/ilivalidator
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 
 ENTRYPOINT ["java","-XX:+UseParallelGC","-XX:MaxRAMPercentage=80.0","-cp","app:app/lib/*","ch.so.agi.ilivalidator.IlivalidatorWebServiceApplication"]
-
-#HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl http://localhost:8888/actuator/health
