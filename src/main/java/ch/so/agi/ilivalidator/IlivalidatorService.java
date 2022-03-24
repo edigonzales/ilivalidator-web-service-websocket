@@ -68,16 +68,20 @@ public class IlivalidatorService {
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
         settings.setValue(Validator.SETTING_XTFLOG, logFileName + ".xtf");
         
-        if (getModelNameFromTransferFile(inputFileName).equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
+        if (allObjectsAccessible.toLowerCase().equalsIgnoreCase("true")) {
+            settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        }
+        
+        String modelName = getModelNameFromTransferFile(inputFileName);
+        
+        if (modelName.equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
             settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
+            settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
         } else {
             settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
         }
         
-        if (allObjectsAccessible.toLowerCase().equalsIgnoreCase("true")) {
-            settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
-        }
-
+        
         // TODO: delete
         /*
         // Copy the ilivalidator custom functions jar files into temporary directory.
@@ -123,7 +127,6 @@ public class IlivalidatorService {
         // Copy the configuration file that belongs to the INTERLIS model
         // file into the the transfer file folder.
         if (doConfigFile != null) {
-            String modelName = getModelNameFromTransferFile(inputFileName);
             log.info("Try to load config file for model: " + modelName);
 
             // This is the java pure way to load resources in a jar.

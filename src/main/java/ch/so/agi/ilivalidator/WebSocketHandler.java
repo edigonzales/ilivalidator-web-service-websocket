@@ -92,9 +92,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             xtfLogKey = subfolder + "/" + s3XtfLogfilename;
   
             log.info("Uploading objects... " + logKey + ", " + xtfLogKey);
-            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(logKey).build(), new File(logFilename).toPath());
+            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(logKey).contentType("plain/text; charset=utf-8").build(), new File(logFilename).toPath());
             s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(logKey).acl(ObjectCannedACL.PUBLIC_READ).build());
-            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(xtfLogKey).build(), new File(logFilename + ".xtf").toPath());
+            s3.putObject(PutObjectRequest.builder().bucket(s3Bucket).key(xtfLogKey).contentType("text/xml").build(), new File(logFilename + ".xtf").toPath());
             s3.putObjectAcl(PutObjectAclRequest.builder().bucket(s3Bucket).key(xtfLogKey).acl(ObjectCannedACL.PUBLIC_READ).build());
             log.info("Upload complete");
             
