@@ -176,8 +176,9 @@ public abstract class IntegrationTests {
         assertTrue(logfileContents.contains("Info: ...validation failed"));
     }
     
+    // Der Test war früher "Ok". Aber es gibt anscheinend immer noch Überschneidungen.
     @Test
-    public void validation_Ok_ili2() throws Exception {
+    public void validation_Fail_Intersection_ili2() throws Exception {
         String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
 
         StandardWebSocketClient client = new StandardWebSocketClient();
@@ -196,7 +197,7 @@ public abstract class IntegrationTests {
         String returnedMessage = clientHandler.getMessage();
         System.out.println("returnedMessage: " + returnedMessage);
         logger.info("returnedMessage: " + returnedMessage);
-        assertTrue(returnedMessage.contains("...validation done:"));
+        assertTrue(returnedMessage.contains("...validation failed:"));
 
         Document document = Jsoup.parse(returnedMessage);
         Elements links = document.select("a[href]");
@@ -211,5 +212,6 @@ public abstract class IntegrationTests {
         }
         
         assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
+        assertTrue(logfileContents.contains("polygons overlay tid1 32ef0b94-4933-4273-97ba-3e705f928139/Geometrie[1], tid2 0c5d7986-65f0-4ce5-beea-53f13ca7dae5/Geometrie[1]"));
     }
 }
