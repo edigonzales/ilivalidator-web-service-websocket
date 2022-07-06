@@ -78,8 +78,11 @@ tasks.named('test') {
     }   
 }
 
+// nur für lokales Testen
+// wegen multi arch muss das Image nochmals gebuildet werden
+// (in gh action) und direkt gepushed werden.
 docker {
-    name 'hub.docker.com/edigonzales/ilivalidator-web-service'
+    name 'sogis/ilivalidator-web-service'
     tags 'latest'
     dockerfile file('Dockerfile') // default
     copySpec.from("build/libs").into("build/libs") // Unnötig, da die Jars nach in den Context kopiert werden, dann muss aber der COPY-Befehlt im Dockerfile angepasst werden. 
