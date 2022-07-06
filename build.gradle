@@ -78,7 +78,9 @@ tasks.named('test') {
     }   
 }
 
-// nur für lokales Testen
+// oder halt doch nur exec? was bring mit ein Plugin?
+
+// nur für lokales Testen?
 // wegen multi arch muss das Image nochmals gebuildet werden
 // (in gh action) und direkt gepushed werden.
 docker {
