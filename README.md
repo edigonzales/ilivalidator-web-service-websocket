@@ -1,4 +1,4 @@
-![CI/CD](https://github.com/sogis/ilivalidator-web-service-websocket/workflows/CI/CD/badge.svg)
+[![CI/CD](https://github.com/sogis/ilivalidator-web-service-websocket/actions/workflows/main.yml/badge.svg)](https://github.com/sogis/ilivalidator-web-service-websocket/actions/workflows/main.yml)
 
 # ilivalidator-web-service-websocket
 
