@@ -38,12 +38,6 @@ public class IlivalidatorService {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    @Value("${app.connectTimeout}")
-    private String connectTimeout;
-    
-    @Value("${app.readTimeout}")
-    private String readTimeout;
-
     /**
      * This method validates an INTERLIS transfer file with
      * <a href="https://github.com/claeis/ilivalidator">ilivalidator library</a>.
@@ -59,11 +53,7 @@ public class IlivalidatorService {
      * @return String Returns the log file of the validation.
      */
     public synchronized boolean validate(String allObjectsAccessible, String doConfigFile, String inputFileName, String logFileName)
-            throws IoxException, IOException {
-        
-        System.setProperty("sun.net.client.defaultConnectTimeout", connectTimeout);
-        System.setProperty("sun.net.client.defaultReadTimeout", readTimeout);
-        
+            throws IoxException, IOException {        
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
         settings.setValue(Validator.SETTING_XTFLOG, logFileName + ".xtf");

@@ -80,7 +80,18 @@ Since ilivalidator is heavily tested in its own project, there are only function
 
 It uses a simple release management and versioning mechanism: Local builds are tagged as `1.0.LOCALBUILD`. Builds on Travis or Jenkins will append the build number, e.g. `1.0.48`. Major version will be increased after "major" changes. After every commit to the repository a docker image will be build and pushed to `hub.docker.com`. It will be tagged as `latest` and with the build number (`1.0.48`).
 
-## Running as Docker Image (SO!GIS)
+## Running
+
+### JVM
+TODO:
+
+
+### Docker
+```
+docker run -p 8888:8888 -e AWS_ACCESS_KEY_ID=xxxx -e AWS_SECRET_ACCESS_KEY=yyyy sogis/ilivalidator-web-service
+```
+
+### SO!GIS
 TODO: Link to Openshift stuff.
 
 
