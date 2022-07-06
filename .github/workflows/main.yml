@@ -34,7 +34,8 @@ jobs:
           java-version: 11
 
       - name: Build with Gradle
-        run: ./gradlew clean build dockerTest --fail-fast 
+        run: ./gradlew clean build --fail-fast 
+        #run: ./gradlew clean build dockerTest --fail-fast 
         #run: ./gradlew clean build buildDockerImage -x test -x dockerTest
         env:
           BUILD_NUMBER: ${{ env.GITHUB_RUN_NUMBER }}

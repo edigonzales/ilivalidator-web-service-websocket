@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.palantir.docker' version '0.34.0'
     //id "com.bmuschko.docker-remote-api" version "7.1.0"
     //id "com.dorongold.task-tree" version "2.1.0"
 }
@@ -18,6 +19,10 @@ targetCompatibility = '11'
 
 compileJava {
     options.compilerArgs.addAll(['--release', '11'])
+}
+
+bootJar {
+   archiveName = baseName + "-" + version + "-exec.jar"
 }
 
 sourceSets {
@@ -71,6 +76,16 @@ tasks.named('test') {
     testLogging {
         showStandardStreams = true
     }   
+}
+
+docker {
+    name 'hub.docker.com/edigonzales/ilivalidator-web-service'
+    tags 'latest'
+    dockerfile file('Dockerfile') // default
+    copySpec.from("build/libs").into("build/libs") // Unnötig, da die Jars nach in den Context kopiert werden, dann muss aber der COPY-Befehlt im Dockerfile angepasst werden. 
+
+    noCache true
+    load true
 }
 
 /*
