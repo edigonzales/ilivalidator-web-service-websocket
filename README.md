@@ -83,7 +83,7 @@ It uses a simple release management and versioning mechanism: Local builds are t
 ## Running
 
 ### JVM
-TODO:
+TODO
 
 
 ### Docker

@@ -15,6 +15,10 @@ description = """ilivalidator web service"""
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
+compileJava {
+    options.compilerArgs.addAll(['--release', '11'])
+}
+
 sourceSets {
     dockerTest {
         java.srcDir "$projectDir/src/dockerTest/java"
