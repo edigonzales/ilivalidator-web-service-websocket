@@ -1,11 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.5'
+    id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id "com.bmuschko.docker-remote-api" version "7.1.0"
+    //id "com.bmuschko.docker-remote-api" version "7.1.0"
     //id "com.dorongold.task-tree" version "2.1.0"
 }
 
+apply plugin: 'io.spring.dependency-management'
 apply from: "$rootDir/gradle/versioning.gradle"
 
 group = 'ch.so.agi.ilivalidator'
@@ -34,7 +35,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "http://jars.interlis.ch/"; allowInsecureProtocol true }
+    maven { url "https://jars.interlis.ch/" }
 }
 
 configurations.all {
@@ -64,7 +65,7 @@ dependencies {
     dockerTestImplementation sourceSets.test.output          
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
     failFast = true
     testLogging {
@@ -72,6 +73,7 @@ test {
     }   
 }
 
+/*
 task deleteFilesJarDir(type: Delete) {
     delete fileTree("${buildDir}/dependency/")
     delete file("${buildDir}/dependency/")
@@ -107,7 +109,6 @@ import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerLogsContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer.ExposedPort
-import java.text.SimpleDateFormat
 
 docker {
     registryCredentials {
@@ -164,6 +165,9 @@ task pushDockerImages(type: DockerPushImage) {
 
 dockerTest.dependsOn('startDockerContainer')
 dockerTest.finalizedBy('stopDockerContainer')
+*/
+
+import java.text.SimpleDateFormat
 
 def getCheckedOutGitCommitHash() {
     'git log -1 --pretty=%H'.execute().text.trim()
