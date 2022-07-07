@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'com.palantir.docker' version '0.34.0'
+    id 'com.google.cloud.tools.jib' version '3.2.1'
     //id "com.bmuschko.docker-remote-api" version "7.1.0"
     //id "com.dorongold.task-tree" version "2.1.0"
 }
@@ -78,11 +78,21 @@ tasks.named('test') {
     }   
 }
 
+task buildImage(type: Exec) {
+    workingDir "$projectDir"
+    commandLine 'docker', 'build',
+                '--no-cache', '--force-rm',
+                '-t', "sogis/ilivalidator-web-service:latest",
+                '-f', 'Dockerfile',  '.'
+}
+
+
 // oder halt doch nur exec? was bring mit ein Plugin?
 
 // nur für lokales Testen?
 // wegen multi arch muss das Image nochmals gebuildet werden
 // (in gh action) und direkt gepushed werden.
+/*
 docker {
     name 'sogis/ilivalidator-web-service'
     tags 'latest'
@@ -92,7 +102,7 @@ docker {
     noCache true
     load true
 }
-
+*/
 /*
 task deleteFilesJarDir(type: Delete) {
     delete fileTree("${buildDir}/dependency/")

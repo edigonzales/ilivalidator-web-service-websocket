@@ -21,6 +21,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.lang.Nullable;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -94,125 +98,168 @@ public abstract class IntegrationTests {
         }
     }
 
-    @Test
-    public void validation_Ok_ili1() throws Exception {
+    
+    
+    @Test 
+    public void fubar() throws Exception {
         String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+
+        
+        
+
 
         StandardWebSocketClient client = new StandardWebSocketClient();
         ClientSocketHandler clientHandler = new ClientSocketHandler();
-        client.doHandshake(clientHandler, endpoint);
+//        ListenableFuture<WebSocketSession> future = client.doHandshake(clientHandler, endpoint);
 
+        WebSocketConnectionManager connectionManager = new WebSocketConnectionManager(
+                new StandardWebSocketClient(), clientHandler, endpoint);
+
+        connectionManager.start();
+
+        System.out.println("fubar");
         Thread.sleep(2000);
-        assertTrue(clientHandler.isConnected());
         
-        File file = new File("src/test/data/ch_254900.itf");
-        clientHandler.sendMessage(file);
-        clientHandler.sendMessage(file.getName());
-
-        Thread.sleep(30000);
         
-        String returnedMessage = clientHandler.getMessage();
-        System.out.println("returnedMessage: " + returnedMessage);
-        logger.info("returnedMessage: " + returnedMessage);
-        assertTrue(returnedMessage.contains("...validation done:"));
+//        future.addCallback(new ListenableFutureCallback<WebSocketSession>() {
+//            @Override
+//            public void onSuccess(@Nullable WebSocketSession result) {
+//                //webSocketSession = result;
+//                logger.info("Successfully connected");
+//            }
+//            @Override
+//            public void onFailure(Throwable ex) {
+//                logger.error("Failed to connect", ex);
+//            }
+//        });
         
-        Document document = Jsoup.parse(returnedMessage);
-        Elements links = document.select("a[href]");
-        
-        String link = links.get(0).attr("href");
-        URL logfileUrl = new URL(link);
-                        
-        String logfileContents = null;
-        try (InputStream in = logfileUrl.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        }
-        assertTrue(logfileContents.contains("Info: ...validation done")); 
     }
     
-    @Test
-    public void validation_Fail_ili2() throws Exception {
-        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
-
-        StandardWebSocketClient client = new StandardWebSocketClient();
-        ClientSocketHandler clientHandler = new ClientSocketHandler();
-        client.doHandshake(clientHandler, endpoint);
-
-        Thread.sleep(2000);
-        assertTrue(clientHandler.isConnected());
-
-        File file = new File("src/test/data/2457_Messen_vorher.xtf");
-        clientHandler.sendMessage(file);
-        clientHandler.sendMessage(file.getName());
-
-        Thread.sleep(180000);
-        //Thread.sleep(60000);
-        
-        String returnedMessage = clientHandler.getMessage();
-        assertTrue(returnedMessage.contains("...validation failed:"));
-
-        Document document = Jsoup.parse(returnedMessage);
-        Elements links = document.select("a[href]");
-        
-        String link = links.get(0).attr("href");
-        URL logfileUrl = new URL(link);
-                
-        String logfileContents = null;
-        try (InputStream in = logfileUrl.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        }
-        
-        assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
-        assertTrue(logfileContents.contains("Warning: line 5: SO_Nutzungsplanung_20171118.Rechtsvorschriften.Dokument: tid d3c20374-f6c5-48f9-8e1e-232b87a9d80a: invalid format of INTERLIS.URI value <34-Messen/Entscheide/34-36_45-E.pdf> in attribute TextImWeb"));
-        assertTrue(logfileContents.contains("Error: line 61: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: tid 6: Association SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente must not have an OID (6)"));
-        assertTrue(logfileContents.contains("Error: line 412: SO_Nutzungsplanung_20171118.Nutzungsplanung.Grundnutzung: tid 2d285daf-a5ab-4106-a453-58eef2e921ab: duplicate coord at (2599932.281, 1216063.38, NaN)"));
-        assertTrue(logfileContents.contains("Error: line 140: SO_Nutzungsplanung_20171118.Nutzungsplanung.Typ_Ueberlagernd_Flaeche: tid 0723a0c8-46e4-4e4f-aba4-c75e90bece14: Attributwert Verbindlichkeit ist nicht identisch zum Objektkatalog: 'orientierend' - '6110'"));
-        assertTrue(logfileContents.contains("Dokument 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/24-Brunnenthal/Reglemente/024_BZR.pdf' wurde nicht gefunden"));
-        // Irgendwie ist das identisch aber doch nicht. FIXME.
-        //assertTrue(logfileContents.contains("Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1]: Intersection coord1 (2600228,240, 1217472,518), tids 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1], 9b8a1966-1482-4b1f-b576-968f4246e80a/Geometrie[1]"));
-        assertTrue(logfileContents.contains("Error: Set Constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Nutzungsplanung_Validierung.v_Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true"));
-        assertTrue(logfileContents.contains("Info: validate set constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Rechtsvorschriften_Validierung.v_HinweisWeitereDokumente.isValidDocumentsCycle..."));
-        assertTrue(logfileContents.contains("Error: line 61: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: tid 6: self loop found: 95efebb8-24df-4462-9af1-15500e341f04"));       
-        assertTrue(logfileContents.contains("Info: ...validation failed"));
-    }
     
-    // Der Test war früher "Ok". Aber es gibt anscheinend immer noch Überschneidungen.
-    @Test
-    public void validation_Fail_Intersection_ili2() throws Exception {
-        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
-
-        StandardWebSocketClient client = new StandardWebSocketClient();
-        ClientSocketHandler clientHandler = new ClientSocketHandler();
-        client.doHandshake(clientHandler, endpoint);
-
-        Thread.sleep(2000);
-        assertTrue(clientHandler.isConnected());
-
-        File file = new File("src/test/data/2457_Messen_nachher.xtf");
-        clientHandler.sendMessage(file);
-        clientHandler.sendMessage(file.getName());
-
-        Thread.sleep(240000);
-        
-        String returnedMessage = clientHandler.getMessage();
-        System.out.println("returnedMessage: " + returnedMessage);
-        logger.info("returnedMessage: " + returnedMessage);
-        assertTrue(returnedMessage.contains("...validation failed:"));
-
-        Document document = Jsoup.parse(returnedMessage);
-        Elements links = document.select("a[href]");
-        
-        String link = links.get(0).attr("href");
-        URL logfileUrl = new URL(link);
-                
-        String logfileContents = null;
-        try (InputStream in = logfileUrl.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        }
-        
-        assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
-        assertTrue(logfileContents.contains("polygons overlay tid1 32ef0b94-4933-4273-97ba-3e705f928139/Geometrie[1], tid2 0c5d7986-65f0-4ce5-beea-53f13ca7dae5/Geometrie[1]"));
-    }
+    // Es kommt doch nur eine Nachricht zurück.
+    // pollen bis sie da ist und dann testen.
+    
+    
+    
+//    @Test
+//    public void validation_Ok_ili1() throws Exception {
+//        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+//
+//        StandardWebSocketClient client = new StandardWebSocketClient();
+//        ClientSocketHandler clientHandler = new ClientSocketHandler();
+//        client.doHandshake(clientHandler, endpoint);
+//
+//        Thread.sleep(2000);
+//        assertTrue(clientHandler.isConnected());
+//        
+//        File file = new File("src/test/data/ch_254900.itf");
+//        clientHandler.sendMessage(file);
+//        clientHandler.sendMessage(file.getName());
+//
+//        Thread.sleep(30000);
+//        
+//        String returnedMessage = clientHandler.getMessage();
+//        System.out.println("returnedMessage: " + returnedMessage);
+//        logger.info("returnedMessage: " + returnedMessage);
+//        assertTrue(returnedMessage.contains("...validation done:"));
+//        
+//        Document document = Jsoup.parse(returnedMessage);
+//        Elements links = document.select("a[href]");
+//        
+//        String link = links.get(0).attr("href");
+//        URL logfileUrl = new URL(link);
+//                        
+//        String logfileContents = null;
+//        try (InputStream in = logfileUrl.openStream()) {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+//        }
+//        assertTrue(logfileContents.contains("Info: ...validation done")); 
+//    }
+//    
+//    @Test
+//    public void validation_Fail_ili2() throws Exception {
+//        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+//
+//        StandardWebSocketClient client = new StandardWebSocketClient();
+//        ClientSocketHandler clientHandler = new ClientSocketHandler();
+//        client.doHandshake(clientHandler, endpoint);
+//
+//        Thread.sleep(2000);
+//        assertTrue(clientHandler.isConnected());
+//
+//        File file = new File("src/test/data/2457_Messen_vorher.xtf");
+//        clientHandler.sendMessage(file);
+//        clientHandler.sendMessage(file.getName());
+//
+//        Thread.sleep(180000);
+//        //Thread.sleep(60000);
+//        
+//        String returnedMessage = clientHandler.getMessage();
+//        assertTrue(returnedMessage.contains("...validation failed:"));
+//
+//        Document document = Jsoup.parse(returnedMessage);
+//        Elements links = document.select("a[href]");
+//        
+//        String link = links.get(0).attr("href");
+//        URL logfileUrl = new URL(link);
+//                
+//        String logfileContents = null;
+//        try (InputStream in = logfileUrl.openStream()) {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+//        }
+//        
+//        assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
+//        assertTrue(logfileContents.contains("Warning: line 5: SO_Nutzungsplanung_20171118.Rechtsvorschriften.Dokument: tid d3c20374-f6c5-48f9-8e1e-232b87a9d80a: invalid format of INTERLIS.URI value <34-Messen/Entscheide/34-36_45-E.pdf> in attribute TextImWeb"));
+//        assertTrue(logfileContents.contains("Error: line 61: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: tid 6: Association SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente must not have an OID (6)"));
+//        assertTrue(logfileContents.contains("Error: line 412: SO_Nutzungsplanung_20171118.Nutzungsplanung.Grundnutzung: tid 2d285daf-a5ab-4106-a453-58eef2e921ab: duplicate coord at (2599932.281, 1216063.38, NaN)"));
+//        assertTrue(logfileContents.contains("Error: line 140: SO_Nutzungsplanung_20171118.Nutzungsplanung.Typ_Ueberlagernd_Flaeche: tid 0723a0c8-46e4-4e4f-aba4-c75e90bece14: Attributwert Verbindlichkeit ist nicht identisch zum Objektkatalog: 'orientierend' - '6110'"));
+//        assertTrue(logfileContents.contains("Dokument 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/24-Brunnenthal/Reglemente/024_BZR.pdf' wurde nicht gefunden"));
+//        // Irgendwie ist das identisch aber doch nicht. FIXME.
+//        //assertTrue(logfileContents.contains("Error: SO_Nutzungsplanung_20171118.Nutzungsplanung.Ueberlagernd_Flaeche: tid 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1]: Intersection coord1 (2600228,240, 1217472,518), tids 7478a32c-45d6-4b3f-8507-0b9f4bd308bf/Geometrie[1], 9b8a1966-1482-4b1f-b576-968f4246e80a/Geometrie[1]"));
+//        assertTrue(logfileContents.contains("Error: Set Constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Nutzungsplanung_Validierung.v_Ueberlagernd_Flaeche.laermempfindlichkeitsAreaCheck is not true"));
+//        assertTrue(logfileContents.contains("Info: validate set constraint SO_Nutzungsplanung_20171118_Validierung_20211006.Rechtsvorschriften_Validierung.v_HinweisWeitereDokumente.isValidDocumentsCycle..."));
+//        assertTrue(logfileContents.contains("Error: line 61: SO_Nutzungsplanung_20171118.Rechtsvorschriften.HinweisWeitereDokumente: tid 6: self loop found: 95efebb8-24df-4462-9af1-15500e341f04"));       
+//        assertTrue(logfileContents.contains("Info: ...validation failed"));
+//    }
+//    
+//    // Der Test war früher "Ok". Aber es gibt anscheinend immer noch Überschneidungen.
+//    @Test
+//    public void validation_Fail_Intersection_ili2() throws Exception {
+//        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+//
+//        StandardWebSocketClient client = new StandardWebSocketClient();
+//        ClientSocketHandler clientHandler = new ClientSocketHandler();
+//        client.doHandshake(clientHandler, endpoint);
+//
+//        Thread.sleep(2000);
+//        assertTrue(clientHandler.isConnected());
+//
+//        File file = new File("src/test/data/2457_Messen_nachher.xtf");
+//        clientHandler.sendMessage(file);
+//        clientHandler.sendMessage(file.getName());
+//
+//        Thread.sleep(240000);
+//        
+//        String returnedMessage = clientHandler.getMessage();
+//        System.out.println("returnedMessage: " + returnedMessage);
+//        logger.info("returnedMessage: " + returnedMessage);
+//        assertTrue(returnedMessage.contains("...validation failed:"));
+//
+//        Document document = Jsoup.parse(returnedMessage);
+//        Elements links = document.select("a[href]");
+//        
+//        String link = links.get(0).attr("href");
+//        URL logfileUrl = new URL(link);
+//                
+//        String logfileContents = null;
+//        try (InputStream in = logfileUrl.openStream()) {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//            logfileContents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+//        }
+//        
+//        assertTrue(logfileContents.contains("so_nutzungsplanung_20171118.toml"));
+//        assertTrue(logfileContents.contains("polygons overlay tid1 32ef0b94-4933-4273-97ba-3e705f928139/Geometrie[1], tid2 0c5d7986-65f0-4ce5-beea-53f13ca7dae5/Geometrie[1]"));
+//    }
 }
