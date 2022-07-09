@@ -42,60 +42,32 @@ public class IlivalidatorService {
      * This method validates an INTERLIS transfer file with
      * <a href="https://github.com/claeis/ilivalidator">ilivalidator library</a>.
      * 
-     * @param doConfigFile
-     *            Use ilivalidator configuration file for tailoring the validation.
-     * @param fileName
-     *            Name of INTERLIS transfer file.
-     * @throws IoxException
-     *             if an error occurred when trying to figure out model name.
-     * @throws IOException
-     *             if config file cannot be read or copied to file system.
-     * @return String Returns the log file of the validation.
+     * @param doConfigFile  Use ilivalidator configuration file for tailoring the validation.
+     * @param fileName      Name of INTERLIS transfer file.
+     * @throws IoxException If an error occurred when trying to figure out model name.
+     * @throws IOException  If config file cannot be read or copied to file system.
+     * @return boolean      True, if transfer file is valid. False, if errors were found.
      */
     public synchronized boolean validate(String allObjectsAccessible, String doConfigFile, String inputFileName, String logFileName)
             throws IoxException, IOException {        
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_LOGFILE, logFileName);
         settings.setValue(Validator.SETTING_XTFLOG, logFileName + ".xtf");
+        settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
         
         if (allObjectsAccessible.toLowerCase().equalsIgnoreCase("true")) {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
         }
         
         String modelName = getModelNameFromTransferFile(inputFileName);
-        
+
+        // TODO: ist das noch nötig? https://github.com/claeis/ilivalidator/issues/83 -> testen
         if (modelName.equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
-            settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
+            //settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
-        } else {
-            settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
-        }
-        
-        
-        // TODO: delete
-        /*
-        // Copy the ilivalidator custom functions jar files into temporary directory.
-        // Ilivalidator durchsucht automatisch das Verzeichnis wo die XTF-Datei liegt 
-        // nach Modellen. Siehe oben `Validator.SETTING_DEFAULT_ILIDIRS`. Mehr ist
-        // nicht notwendig.
-        try {
-            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Resource[] resources = resolver.getResources("classpath:libs-ext/*.jar");
-            log.info("Found " + String.valueOf(resources.length) + " custom functions jar files.");
-            for (Resource resource : resources) {
-                InputStream is = resource.getInputStream();
-                File jarFile = new File(FilenameUtils.getFullPath(inputFileName), resource.getFilename());
-                log.info(jarFile.getAbsolutePath());
-                Files.copy(is, jarFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                IOUtils.closeQuietly(is);
-            }
-            settings.setValue(Validator.SETTING_PLUGINFOLDER, new File(FilenameUtils.getFullPath(inputFileName)).getAbsolutePath());
-            log.info("Plugin folder: " + settings.getValue(Validator.SETTING_PLUGINFOLDER));
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage());
-            log.error("Error while copying the ilivalidator custom functions jar files.");
-        } 
-        */
+        //} else {
+        //    settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
+       // }
         
         // Additional models, e.g. validation models (when they are not available elsewhere).
         try {
@@ -114,15 +86,10 @@ public class IlivalidatorService {
             log.error("Error while copying the local INTERLIS model files. Continue with validation process.");
         }
 
-        // Copy the configuration file that belongs to the INTERLIS model
+        // Copy the configuration file that belongs/maps to the INTERLIS model
         // file into the the transfer file folder.
         if (doConfigFile != null) {
             log.info("Try to load config file for model: " + modelName);
-
-            // This is the java pure way to load resources in a jar.
-            // InputStream is = getClass().getResourceAsStream("dm01avch24lv95d.toml");
-
-            // Spring offers a more elegant (?) way.
             try {
                 Resource resource = resourceLoader.getResource("classpath:toml/" + modelName.toLowerCase() + ".toml");
                 InputStream is = resource.getInputStream();
