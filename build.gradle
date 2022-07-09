@@ -118,7 +118,7 @@ task buildAndPushImages(type: Exec) {
                 '--label', "org.opencontainers.image.base.name=docker.io/bellsoft/liberica-openjdk-alpine-musl:17.0.3",
                 '--label', "org.opencontainers.image.created=$buildTimestamp", 
                 '--label', "org.opencontainers.image.revision=$githash",
-                //'-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:latest",
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:latest",
                 '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:$version.major",
                 '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:"+version.major+"."+version.minor,
                 '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:$version",
