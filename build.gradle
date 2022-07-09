@@ -80,11 +80,15 @@ tasks.named('test') {
     }   
 }
 
+def DOCKER_ACCOUNT = "edigonzales"
+def DOCKER_REPO = "ilivalidator-web-service"
+
+// only for testing
 task buildImage(type: Exec) {
     workingDir "$projectDir"
     commandLine 'docker', 'build',
                 '--no-cache', '--force-rm',
-                '-t', "sogis/ilivalidator-web-service:latest",
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:latest",
                 '-f', 'Dockerfile',  '.'
 }
 
@@ -99,10 +103,26 @@ task dockerTest(type: Test) {
     mustRunAfter test
 }
 
-import java.text.SimpleDateFormat
+// local develop: 'docker buildx create --use'
+// gh action: handled by the pipeline
+task buildAndPushImages(type: Exec) {
+    def githash = getCheckedOutGitCommitHash()
+    def buildTimestamp = getTimestamp()
 
-def getCheckedOutGitCommitHash() {
-    'git log -1 --pretty=%H'.execute().text.trim()
+    workingDir "$projectDir"
+    commandLine 'docker', 'buildx', 'build',
+                '--platform', 'linux/arm64,linux/amd64',
+                '--no-cache', '--force-rm', '--push',
+                '--label', "org.opencontainers.image.title=$project.description",
+                '--label', "org.opencontainers.image.version=$version",
+                '--label', "org.opencontainers.image.base.name=docker.io/bellsoft/liberica-openjdk-alpine-musl:17.0.3",
+                '--label', "org.opencontainers.image.created=$buildTimestamp", 
+                '--label', "org.opencontainers.image.revision=$githash",
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:latest",
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:$version.major",
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:"+version.major+"."+version.minor,
+                '-t', "$DOCKER_ACCOUNT/$DOCKER_REPO:$version",
+                '-f', 'Dockerfile',  '.'
 }
 
 task versionTxt()  {
@@ -111,14 +131,25 @@ task versionTxt()  {
         new File("version.txt").text = """
 Version: $version
 Revision: ${getCheckedOutGitCommitHash()}
-Buildtime: ${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+Buildtime: ${getTimestamp()}
 Application-name: ilivalidator-web-service
 """
     }
 }
+
 task copyVersionTxt(type: Copy) {
     from "version.txt"
     into "src/main/resources/static/"
 }
+
 copyVersionTxt.dependsOn(versionTxt)
 processResources.dependsOn(copyVersionTxt)
+
+def getCheckedOutGitCommitHash() {
+    'git log -1 --pretty=%H'.execute().text.trim()
+}
+
+def getTimestamp() {
+    def date = new Date()
+    return date.format('yyyy-MM-dd HH:mm:ss')
+}
