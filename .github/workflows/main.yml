@@ -38,7 +38,7 @@ jobs:
           ./gradlew clean build
           ls -la build/libs/
 
-      - name: Upload docker test reports
+      - name: Upload test reports
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
