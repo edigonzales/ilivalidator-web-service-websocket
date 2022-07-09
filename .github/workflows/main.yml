@@ -9,7 +9,6 @@ jobs:
     env:
       DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}} 
-      #BUILD_NUMBER: ${{ github.run_number }}
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
@@ -36,7 +35,7 @@ jobs:
       - name: Build and test
         id: build
         run: |
-          ./gradlew clean build -x test
+          ./gradlew clean build
           ls -la build/libs/
 
       - name: Upload docker test reports
@@ -48,8 +47,8 @@ jobs:
 
       - name: Build and test docker image
         id: dockerbuild
-        #run: ./gradlew buildImage dockerTest
-        run: ./gradlew buildImage
+        run: ./gradlew buildImage dockerTest
+        #run: ./gradlew buildImage
         if: steps.build.outcome == 'success'
 
       - name: Upload docker test reports
@@ -72,6 +71,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
         if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
 
-      - name: Build and test docker image
+      - name: Multi-platform build and push
         run: ./gradlew buildAndPushImages
         if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT && (steps.dockerbuild.outcome == 'success')}}
