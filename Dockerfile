@@ -1,32 +1,18 @@
-#FROM eclipse-temurin:17_35-jdk as jre-build
-#RUN jlink \
-#    --compress=2 \
-#    --no-header-files \
-#    --no-man-pages \
-#    --add-modules java.base,java.logging,java.xml,jdk.unsupported,java.sql,java.naming,java.desktop,java.management,java.security.jgss,jdk.crypto.ec,java.instrument \
-#    --output /javaruntime
+FROM bellsoft/liberica-openjdk-alpine-musl:17.0.3
 
-#FROM debian:bullseye-slim
-#ENV JAVA_HOME=/opt/java/openjdk
-#ENV PATH "${JAVA_HOME}/bin:${PATH}"
-#COPY --from=jre-build /javaruntime $JAVA_HOME
+ARG UID=1001
+RUN adduser -S ilivalidator -u $UID
 
-FROM bellsoft/liberica-openjdk-alpine-musl:17.0.1-12
+ENV HOME=/work
+WORKDIR $HOME
 
+COPY ./build/libs/ilivalidator-web-service-websocket-*-exec.jar ./application.jar
+RUN chown $UID:0 . && \
+    chmod 0775 . && \
+    ls -la
+
+USER $UID
 EXPOSE 8888
 
-WORKDIR /home/ilivalidator
-
-ARG DEPENDENCY=build/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /home/ilivalidator/app/lib
-COPY ${DEPENDENCY}/META-INF /home/ilivalidator/app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /home/ilivalidator/app
-RUN chown -R 0 /home/ilivalidator && \
-    chmod -R g=u /home/ilivalidator
-
-ENV ILI_CACHE=/home/ilivalidator
-
-#Log4j 2 CVE-2021-44228
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-
-ENTRYPOINT ["java","-XX:+UseParallelGC","-XX:MaxRAMPercentage=80.0","-cp","app:app/lib/*","ch.so.agi.ilivalidator.IlivalidatorWebServiceApplication"]
+CMD java -XX:+UseParallelGC -XX:MaxRAMPercentage=80.0 -jar application.jar
