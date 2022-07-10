@@ -65,6 +65,7 @@ public class IlivalidatorService {
         if (modelName.equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
             //settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
+        }
         //} else {
         //    settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
        // }
