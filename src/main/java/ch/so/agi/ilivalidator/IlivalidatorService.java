@@ -55,20 +55,18 @@ public class IlivalidatorService {
         settings.setValue(Validator.SETTING_XTFLOG, logFileName + ".xtf");
         settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
         
+        // Leider scheint es nicht steuerbar zu sein via toml.
+        // https://github.com/claeis/ilivalidator/issues/350
+        // https://github.com/claeis/ilivalidator/issues/83
         if (allObjectsAccessible.toLowerCase().equalsIgnoreCase("true")) {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
         }
         
         String modelName = getModelNameFromTransferFile(inputFileName);
 
-        // TODO: ist das noch nötig? https://github.com/claeis/ilivalidator/issues/83 -> testen
         if (modelName.equalsIgnoreCase("VSADSSMINI_2020_LV95")) {
-            //settings.setValue(Validator.SETTING_ILIDIRS, "https://vsa.ch/models;%ITF_DIR");
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
         }
-        //} else {
-        //    settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
-       // }
         
         // Additional models, e.g. validation models (when they are not available elsewhere).
         try {
