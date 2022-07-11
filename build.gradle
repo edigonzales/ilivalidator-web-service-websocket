@@ -14,9 +14,12 @@ description = """ilivalidator web service"""
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
+
+/*
 compileJava {
     options.compilerArgs.addAll(['--release', '11'])
 }
+*/
 
 bootJar {
    archiveName = baseName + "-" + version + "-exec.jar"
