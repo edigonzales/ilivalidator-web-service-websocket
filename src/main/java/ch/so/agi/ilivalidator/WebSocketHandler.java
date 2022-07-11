@@ -117,7 +117,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             // TODO: Warum nicht aus der Session löschen???
             // finally und sonst der Rest hier?
             FileUtils.deleteDirectory(namedFile.toFile().getParentFile());
-öij lkj l
             return;
         } 
                 
