@@ -50,7 +50,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     @Autowired
     IlivalidatorService ilivalidator;
 
-    // Websocket-Map. Dient dem Verwalten der Websocket-Session und
+    // Dient dem Verwalten der Websocket-Session und
     // dem Zugriff der zu prüfenden Datein über verschiedene Methoden
     // hinweg. Die Kombination Session-Id und Datei ist eindeutig,
     // während der Prüfung keine weitere Datei hochgeladen werden.
@@ -146,13 +146,14 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         // Der Namen muss jedoch separat mitgeschickt werden. Gespeichert wird die Datei mit einem
         // generischen Namen und anschliessend umbenannt.
         Path uploadFilePath = Paths.get(tmpDirectory.toString(), "data.file"); 
+        log.info(uploadFilePath.toAbsolutePath().toString());
                 
         FileChannel fc = new FileOutputStream(uploadFilePath.toFile().getAbsoluteFile(), false).getChannel();
         fc.write(message.getPayload());
         fc.close();
 
-        // Die Datei wird in eine Websocket-Map kopiert, damit man via
-        // Session-Id Zugriff hat und in einer anderen Methode (wenn man alle 
+        // Die Datei wird in eine Map kopiert, damit man via
+        // Websocket-Session-Id Zugriff hat und in einer anderen Methode (wenn man alle 
         // benötigten Infos hat) die Prüfung durchführen kann.
         sessionFileMap.put(session.getId(), uploadFilePath.toFile());
     }
