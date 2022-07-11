@@ -1,23 +1,14 @@
 package ch.so.agi.ilivalidator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.xtf.XtfReader;
@@ -28,15 +19,17 @@ import ch.interlis.iox_j.EndTransferEvent;
 import ch.interlis.iox_j.StartBasketEvent;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.interlis2.validator.Validator;
 
 @Service
 public class IlivalidatorService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    
-    @Autowired
-    private ResourceLoader resourceLoader;
+
+    @Value("${app.docBase}")
+    private String docBase;
+
+    @Value("${app.configDirectoryName}")
+    private String configDirectoryName;
 
     /**
      * This method validates an INTERLIS transfer file with
@@ -68,39 +61,18 @@ public class IlivalidatorService {
             settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
         }
         
-        // Additional models, e.g. validation models (when they are not available elsewhere).
-        try {
-            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Resource[] resources = resolver.getResources("classpath:ili/*.ili");
-            log.info("Found " + String.valueOf(resources.length) + " local models.");
-            for (Resource resource : resources) {
-                InputStream is = resource.getInputStream();
-                File iliFile = new File(FilenameUtils.getFullPath(inputFileName), resource.getFilename());
-                log.info(iliFile.getAbsolutePath());
-                Files.copy(is, iliFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                IOUtils.closeQuietly(is);
-            }
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage());
-            log.error("Error while copying the local INTERLIS model files. Continue with validation process.");
-        }
+        // Die Verzeichnis der entpackten oder hinzugefügten INTERLIS-Modelldateien
+        // ilivalidator mittels --modeldir bekannt machen.
+        File iliFiles = Paths.get(docBase, configDirectoryName, "ili").toFile();
+        settings.setValue(Validator.SETTING_ILIDIRS, "%ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels;"+iliFiles.getAbsolutePath());
 
-        // Copy the configuration file that belongs/maps to the INTERLIS model
-        // file into the the transfer file folder.
+        // Es wird nach einer Toml-Datei gesucht, die in Kleinbuchstaben gleich heisst, wie das Modell gegen
+        // das geprüft werden soll.
+        // Ist die Datei vorhanden, wird sie ilivalidator als Config-Datei bekannt gemacht.
         if (doConfigFile != null) {
-            log.info("Try to load config file for model: " + modelName);
-            try {
-                Resource resource = resourceLoader.getResource("classpath:toml/" + modelName.toLowerCase() + ".toml");
-                InputStream is = resource.getInputStream();
-
-                File configFile = new File(FilenameUtils.getFullPath(inputFileName), modelName.toLowerCase() + ".toml");
-                Files.copy(is, configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                IOUtils.closeQuietly(is);
-
+            File configFile = Paths.get(docBase, configDirectoryName, "toml", modelName.toLowerCase() + ".toml").toFile();
+            if (configFile.exists()) {
                 settings.setValue(Validator.SETTING_CONFIGFILE, configFile.getAbsolutePath());
-            } catch (FileNotFoundException e) {
-                log.info(e.getMessage());
-                log.info("Configuration file " + modelName.toLowerCase() + ".toml not available. Continue validation without configuration file.");
             }
         }
         

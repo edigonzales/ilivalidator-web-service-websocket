@@ -35,8 +35,8 @@ public abstract class IntegrationTests {
     @LocalServerPort
     protected String port;
     
-    @Value("#{servletContext.contextPath}")
-    protected String servletContextPath;
+//    @Value("#{servletContext.contextPath}")
+//    protected String servletContextPath;
     
     private final String START_MESSAGE = "Validating...";
 
@@ -98,7 +98,7 @@ public abstract class IntegrationTests {
     
     @Test
     public void validation_Ok_ili1() throws Exception {
-        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+        String endpoint = "ws://localhost:" + port + "/socket";
 
         StandardWebSocketClient client = new StandardWebSocketClient();
         ClientSocketHandler clientHandler = new ClientSocketHandler();
@@ -141,7 +141,7 @@ public abstract class IntegrationTests {
     
     @Test
     public void validation_Fail_ili2() throws Exception {
-        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+        String endpoint = "ws://localhost:" + port + "/socket";
 
         StandardWebSocketClient client = new StandardWebSocketClient();
         ClientSocketHandler clientHandler = new ClientSocketHandler();
@@ -197,7 +197,7 @@ public abstract class IntegrationTests {
     // Der Test war früher "Ok". Aber es gibt anscheinend immer noch Überschneidungen.
     @Test
     public void validation_Fail_Intersection_ili2() throws Exception {
-        String endpoint = "ws://localhost:" + port + "/ilivalidator/socket";
+        String endpoint = "ws://localhost:" + port + "/socket";
 
         StandardWebSocketClient client = new StandardWebSocketClient();
         ClientSocketHandler clientHandler = new ClientSocketHandler();

@@ -3,6 +3,7 @@ package ch.so.agi.ilivalidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -33,11 +34,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static String FOLDER_PREFIX = "ilivalidator_";
-
     private static String LOG_ENDPOINT = "log";
-
-    @Value("#{servletContext.contextPath}")
-    protected String servletContextPath;
+    private static String HEX_COLOR_SUCCESS = "#58D68D";
+    private static String HEX_COLOR_FAIL = "#EC7063";
     
     @Value("${server.port}")
     protected String serverPort;
@@ -45,31 +44,37 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     @Value("${app.s3Bucket}")
     private String s3Bucket;
 
+    @Value("${app.workDirectory}")
+    private String workDirectory;
+
     @Autowired
     IlivalidatorService ilivalidator;
 
+    // Websocket-Map. Dient dem Verwalten der Websocket-Session und
+    // dem Zugriff der zu prüfenden Datein über verschiedene Methoden
+    // hinweg. Die Kombination Session-Id und Datei ist eindeutig,
+    // während der Prüfung keine weitere Datei hochgeladen werden.
     HashMap<String, File> sessionFileMap = new HashMap<String, File>();
     
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {        
         File file = sessionFileMap.get(session.getId());
-        
         String filename = message.getPayload();
         
-        // ilivalidator must know if it is a ili1 or ili2 transfer file.
-        Path copiedFile = Paths.get(file.getParent(), filename);
-        Files.copy(file.toPath(), copiedFile, StandardCopyOption.REPLACE_EXISTING);
+        // "file" hat nicht mehr der Original-Dateinamen, weil der Payload der
+        // Binary-Message, diesen nicht mitschickt.
+        Path namedFile = Paths.get(file.getParent(), filename);
+        Files.copy(file.toPath(), namedFile, StandardCopyOption.REPLACE_EXISTING);
         
         session.sendMessage(new TextMessage("Received: " + filename));
         
-        String logFilename = copiedFile.toFile().getAbsolutePath() + ".log";
+        String logFilename = namedFile.toFile().getAbsolutePath() + ".log";
         log.info(logFilename);
         
-        // There is no option for config file support in the GUI at the moment.
+        // Zurzeit wird diese Option im GUI nicht exponiert.
         String configFile = "on";
 
-        // Hardcode this b/c there's no support in the client.
-        // Must be a String.
+        // Zurzeit wird diese Option im GUI nicht exponiert.
         String allObjectsAccessible = "true";
 
         boolean valid;
@@ -78,7 +83,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         try {
             // Run the validation.
             session.sendMessage(new TextMessage("Validating..."));
-            valid = ilivalidator.validate(allObjectsAccessible, configFile, copiedFile.toFile().getAbsolutePath(), logFilename);
+            valid = ilivalidator.validate(allObjectsAccessible, configFile, namedFile.toFile().getAbsolutePath(), logFilename);
             
             // Upload log file to S3.
             log.info("log file: " + logFilename);
@@ -108,29 +113,35 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             TextMessage errorMessage = new TextMessage("An error occured while validating the data:<br>" + e.getMessage());
             session.sendMessage(errorMessage);
             
-            FileUtils.deleteDirectory(copiedFile.toFile().getParentFile());
-
+            // Temp-Verzeichnis mit der Transferdatei löschen.
+            // TODO: Warum nicht aus der Session löschen???
+            // finally und sonst der Rest hier?
+            FileUtils.deleteDirectory(namedFile.toFile().getParentFile());
+öij lkj l
             return;
         } 
                 
         // Browser response.
-        String resultText = "<span style='background-color:#58D68D;'>...validation done:</span>";
+        // TODO: "getHost()" oder ähnlich (siehe unten).
+        String resultText = "<span style='background-color:"+HEX_COLOR_SUCCESS+";'>...validation done:</span>";
         if (!valid) {
-            resultText = "<span style='background-color:#EC7063'>...validation failed:</span>";
+            resultText = "<span style='background-color:"+HEX_COLOR_FAIL+"'>...validation failed:</span>";
         }
         
         TextMessage resultMessage = new TextMessage(resultText + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+logKey+"' target='_blank'>Download log file</a> / "
                 + " <a href='https://s3."+Region.EU_CENTRAL_1.id()+".amazonaws.com/"+s3Bucket+"/"+xtfLogKey+"' target='_blank'>Download XTF log file.</a><br/><br/>   ");
         session.sendMessage(resultMessage);
         
+        // Die Websocket-Session und damit das dazugehörige Transferfile aus
+        // der Websocket-Map löschen. Das Temp-Verzeichnis in dem die Transferdatei
+        // gespeichert wurde, wird ebenfalls gelöscht.
         sessionFileMap.remove(session.getId());
-        
-        FileUtils.deleteDirectory(copiedFile.toFile().getParentFile());
+        FileUtils.deleteDirectory(namedFile.toFile().getParentFile());
     }
     
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws IOException {
-        Path tmpDirectory = Files.createTempDirectory(FOLDER_PREFIX);
+        Path tmpDirectory = Files.createTempDirectory(Paths.get(workDirectory), FOLDER_PREFIX);
         
         // ilivalidator muss wissen, ob es sich um eine ili1- oder ili2-Datei handelt.
         // Der Namen muss jedoch separat mitgeschickt werden. Gespeichert wird die Datei mit einem
@@ -141,8 +152,13 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         fc.write(message.getPayload());
         fc.close();
 
-        File file = uploadFilePath.toFile();
-        
-        sessionFileMap.put(session.getId(), file);
+        // Die Datei wird in eine Websocket-Map kopiert, damit man via
+        // Session-Id Zugriff hat und in einer anderen Methode (wenn man alle 
+        // benötigten Infos hat) die Prüfung durchführen kann.
+        sessionFileMap.put(session.getId(), uploadFilePath.toFile());
+    }
+    
+    private String getHost() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
 }

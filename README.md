@@ -5,9 +5,13 @@
 The ilivalidator web service is a [spring boot](https://projects.spring.io/spring-boot/) application and uses [ilivalidator](https://github.com/claeis/ilivalidator) for the INTERLIS transfer file validation.
 
 ## TODO
-- Find out a smart way to deploy the extension functions models.
-- ....
-- ...
+- Funktioniert directory listing mit reverse proxy
+- update readme
+- update docs:
+ * wie werden die Verzeichnisse erstellt (d.h. falls vorhanden, nicht).
+ * log-Dir muss geshared sein
+ * naming convention, damit toml greifen.
+ * ...
 
 ## Features
 

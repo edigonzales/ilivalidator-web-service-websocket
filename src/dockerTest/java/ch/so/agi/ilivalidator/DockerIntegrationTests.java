@@ -12,7 +12,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 @Testcontainers
 @TestInstance(Lifecycle.PER_CLASS)
 public class DockerIntegrationTests extends IntegrationTests {
-    private static int exposedPort = 8888;
+    private static int exposedPort = 8080;
     
     @Container
     public static GenericContainer<?> ilivalidatorWebService = new GenericContainer<>("sogis/ilivalidator-web-service:latest")
@@ -25,6 +25,6 @@ public class DockerIntegrationTests extends IntegrationTests {
     @BeforeAll
     public void setup() {
         port = String.valueOf(ilivalidatorWebService.getMappedPort(exposedPort));
-        servletContextPath = "/ilivalidator";        
+//        servletContextPath = "/ilivalidator";        
     }
 }
