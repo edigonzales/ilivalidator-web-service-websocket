@@ -16,7 +16,7 @@ public class DockerIntegrationTests extends IntegrationTests {
     
     @Container
     public static GenericContainer<?> ilivalidatorWebService = new GenericContainer<>("sogis/ilivalidator-web-service:latest")
-            .waitingFor(Wait.forHttp("/ilivalidator/actuator/health"))
+            .waitingFor(Wait.forHttp("/actuator/health"))
             .withEnv("AWS_ACCESS_KEY_ID", System.getenv("AWS_ACCESS_KEY_ID"))
             .withEnv("AWS_SECRET_ACCESS_KEY", System.getenv("AWS_SECRET_ACCESS_KEY"))
             .withEnv("DOC_BASE", "/tmp/")
