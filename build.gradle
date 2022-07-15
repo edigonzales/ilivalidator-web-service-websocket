@@ -101,8 +101,8 @@ task dockerTest(type: Test) {
     mustRunAfter test
 }
 
-// local develop: 'docker buildx create --use'
-// gh action: handled by the pipeline
+// When used local you have to create an buildx env: 'docker buildx create --use'
+// This is not necessary with Github Action.
 task buildAndPushImages(type: Exec) {
     def githash = getCheckedOutGitCommitHash()
     def buildTimestamp = getTimestamp()
