@@ -19,6 +19,8 @@ public class DockerIntegrationTests extends IntegrationTests {
             .waitingFor(Wait.forHttp("/ilivalidator/actuator/health"))
             .withEnv("AWS_ACCESS_KEY_ID", System.getenv("AWS_ACCESS_KEY_ID"))
             .withEnv("AWS_SECRET_ACCESS_KEY", System.getenv("AWS_SECRET_ACCESS_KEY"))
+            .withEnv("DOC_BASE", "/tmp/")
+            .withEnv("WORK_DIRECTORY", "/tmp/")
             .withExposedPorts(exposedPort)
             .withLogConsumer(new Slf4jLogConsumer(logger));
 
