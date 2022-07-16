@@ -85,6 +85,21 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             log.info("************: "+session.getLocalAddress().getHostName());
             log.info("************: "+session.getLocalAddress().getAddress().getHostName());
             log.info("************: "+session.getUri().toString());
+            log.info(session.getHandshakeHeaders().toSingleValueMap().toString());
+            log.info(session.getLocalAddress().getHostName());
+            log.info(session.getLocalAddress().getAddress().getHostName());
+            log.info(session.getUri().toString());
+            log.info(session.getAcceptedProtocol());
+            log.info(String.valueOf(session.getLocalAddress().getPort()));
+            log.info(session.getRemoteAddress().getHostString());
+            log.info(session.getUri().getAuthority());
+            log.info(session.getUri().getHost());
+            log.info(session.getUri().getPath());
+            log.info(session.getUri().getPath().replaceFirst("/socket", ""));
+            log.info(session.getUri().getRawPath());
+            log.info(session.getUri().getScheme());
+            log.info(String.valueOf(session.getUri().getPort()));
+            log.info("************");
 
             // Upload log file to S3.
             log.info("log file: " + logFilename);
