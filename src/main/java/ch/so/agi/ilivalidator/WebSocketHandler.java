@@ -80,6 +80,12 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             session.sendMessage(new TextMessage("Validating..."));
             valid = ilivalidator.validate(allObjectsAccessible, configFile, copiedFile.toFile().getAbsolutePath(), logFilename);
             
+            
+            log.info("************: "+session.getHandshakeHeaders().toSingleValueMap().toString());
+            log.info("************: "+session.getLocalAddress().getHostName());
+            log.info("************: "+session.getLocalAddress().getAddress().getHostName());
+            log.info("************: "+session.getUri().toString());
+
             // Upload log file to S3.
             log.info("log file: " + logFilename);
             Region region = Region.EU_CENTRAL_1;
