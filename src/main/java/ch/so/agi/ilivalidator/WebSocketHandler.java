@@ -99,6 +99,14 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
             log.info(session.getUri().getRawPath());
             log.info(session.getUri().getScheme());
             log.info(String.valueOf(session.getUri().getPort()));
+            
+            String scheme = session.getUri().getScheme().length() == 3 ? "https" : "http";
+            String host = session.getUri().getHost();
+            String port = session.getUri().getPort() != 80 ? ":"+String.valueOf(session.getUri().getPort()) : "";
+            String path = session.getUri().getPath().replaceFirst("/socket", "");
+            String baseUrl = scheme+"://"+host+port+"/"+path+"/logs/";
+            log.info("baseUrl: " + baseUrl);
+
             log.info("************");
 
             // Upload log file to S3.
