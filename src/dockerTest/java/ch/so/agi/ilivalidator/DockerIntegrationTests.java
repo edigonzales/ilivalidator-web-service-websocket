@@ -27,6 +27,5 @@ public class DockerIntegrationTests extends IntegrationTests {
     @BeforeAll
     public void setup() {
         port = String.valueOf(ilivalidatorWebService.getMappedPort(exposedPort));
-//        servletContextPath = "/ilivalidator";        
     }
 }
