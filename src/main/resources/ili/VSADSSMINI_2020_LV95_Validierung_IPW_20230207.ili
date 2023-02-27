@@ -1,8 +1,8 @@
 INTERLIS 2.3;
 
-CONTRACTED MODEL VSADSSMINI_2020_LV95_Validierung_IPW_20220624 (de)
+CONTRACTED MODEL VSADSSMINI_2020_LV95_Validierung_IPW_20230207 (de)
 AT "https://geo.so.ch"
-VERSION "2022-06-24"  =
+VERSION "2023-02-07"  =
   
 IMPORTS SIA405_Base_Abwasser_LV95;
 IMPORTS VSADSSMINI_2020_LV95;
@@ -15,34 +15,34 @@ IMPORTS UNQUALIFIED INTERLIS;
       PROJECTION OF VSADSSMINI_2020_LV95.VSADSSMini.Knoten;
     =
       ALL OF Knoten;
-                
-      !!@ name = 11001
-      !!@ ilivalid.msg = "MANDATORY ARA_Nr"
-      MANDATORY CONSTRAINT DEFINED (ARA_Nr);
 
       !!@ name = 11012
-      !!@ ilivalid.msg = "MANDATORY Finanzierung AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Finanzierung) AND Finanzierung != #unbekannt;
+      !!@ ilivalid.msg = "Knoten: MANDATORY Finanzierung"
+      MANDATORY CONSTRAINT DEFINED(Finanzierung);
 
       !!@ name = 11013
-      !!@ ilivalid.msg = "MANDATORY Funktion AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Funktion) AND Funktion != #unbekannt;
+      !!@ ilivalid.msg = "Knoten: MANDATORY Funktion"
+      MANDATORY CONSTRAINT DEFINED(Funktion);
 
       !!@ name = 11014
-      !!@ ilivalid.msg = "MANDATORY FunktionHierarchisch"
+      !!@ ilivalid.msg = "Knoten: MANDATORY FunktionHierarchisch"
       MANDATORY CONSTRAINT DEFINED(FunktionHierarchisch);
 
       !!@ name = 11015
-      !!@ ilivalid.msg = "MANDATORY Lage"
+      !!@ ilivalid.msg = "Knoten: MANDATORY Lage"
       MANDATORY CONSTRAINT DEFINED(Lage);
 
-      !!@ name = 11018
-      !!@ ilivalid.msg = "MANDATORY Nutzungsart_Ist AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Nutzungsart_Ist) AND Nutzungsart_Ist != #unbekannt;
-
       !!@ name = 11025
-      !!@ ilivalid.msg = "MANDATORY Status AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Status) AND Status != #unbekannt;
+      !!@ ilivalid.msg = "Knoten: MANDATORY Status"
+      MANDATORY CONSTRAINT DEFINED(Status);
+
+      !!@ name = 11101
+      !!@ ilivalid.msg = "Knoten: weniger als 80% Finanzierung erfasst"
+      CONSTRAINT >= 80% DEFINED(Finanzierung);
+
+      !!@ name = 11102
+      !!@ ilivalid.msg = "Knoten: weniger als 90% Status erfasst"
+      CONSTRAINT >= 90% DEFINED(Status);
 
     END v_Knoten;
 
@@ -52,40 +52,40 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF Leitung;
 
       !!@ name = 12007
-      !!@ ilivalid.msg = "MANDATORY Finanzierung AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Finanzierung) AND Finanzierung != #unbekannt;
+      !!@ ilivalid.msg = "Leitung: MANDATORY Finanzierung"
+      MANDATORY CONSTRAINT DEFINED(Finanzierung);
 
       !!@ name = 12008
-      !!@ ilivalid.msg = "MANDATORY FunktionHierarchisch AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(FunktionHierarchisch) AND FunktionHierarchisch != #PAA.unbekannt AND FunktionHierarchisch != #SAA.unbekannt;
+      !!@ ilivalid.msg = "Leitung: MANDATORY FunktionHierarchisch"
+      MANDATORY CONSTRAINT DEFINED(FunktionHierarchisch);
 
       !!@ name = 12009
-      !!@ ilivalid.msg = "MANDATORY FunktionHydraulisch AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(FunktionHydraulisch) AND FunktionHydraulisch != #unbekannt;
-
-      !!@ name = 12021
-      !!@ ilivalid.msg = "MANDATORY Lichte_Breite (gilt für PAA)"
-      MANDATORY CONSTRAINT DEFINED(Lichte_Breite) OR isEnumSubVal(FunktionHierarchisch,#SAA);
-
-      !!@ name = 12022
-      !!@ ilivalid.msg = "MANDATORY Lichte_Hoehe (gilt für PAA)"
-      MANDATORY CONSTRAINT DEFINED(Lichte_Hoehe) OR isEnumSubVal(FunktionHierarchisch,#SAA);
+      !!@ ilivalid.msg = "Leitung: MANDATORY FunktionHydraulisch"
+      MANDATORY CONSTRAINT DEFINED(FunktionHydraulisch);
 
       !!@ name = 12025
-      !!@ ilivalid.msg = "MANDATORY Nutzungsart_Ist AND != unbekannt"
+      !!@ ilivalid.msg = "Leitung: MANDATORY Nutzungsart_Ist AND != unbekannt"
       MANDATORY CONSTRAINT DEFINED(Nutzungsart_Ist) AND Nutzungsart_Ist != #unbekannt;
 
-      !!@ name = 12030
-      !!@ ilivalid.msg = "MANDATORY Profiltyp (gilt für PAA)"
-      MANDATORY CONSTRAINT DEFINED(Profiltyp) OR isEnumSubVal(FunktionHierarchisch,#SAA);
-
       !!@ name = 12035
-      !!@ ilivalid.msg = "MANDATORY Status AND != unbekannt"
-      MANDATORY CONSTRAINT DEFINED(Status) AND Status != #unbekannt;
+      !!@ ilivalid.msg = "Leitung: MANDATORY Status"
+      MANDATORY CONSTRAINT DEFINED(Status);
 
       !!@ name = 12036
-      !!@ ilivalid.msg = "MANDATORY Verlauf"
+      !!@ ilivalid.msg = "Leitung: MANDATORY Verlauf"
       MANDATORY CONSTRAINT DEFINED(Verlauf);
+
+      !!@ name = 12101
+      !!@ ilivalid.msg = "Leitung: weniger als 80% Finanzierung erfasst"
+      CONSTRAINT >= 80% DEFINED(Finanzierung);
+
+      !!@ name = 12102
+      !!@ ilivalid.msg = "Leitung: weniger als 90% Nutzungsart erfasst"
+      CONSTRAINT >= 90% DEFINED(Nutzungsart_Ist);
+
+      !!@ name = 12103
+      !!@ ilivalid.msg = "Leitung: weniger als 90% Status erfasst"
+      CONSTRAINT >= 90% DEFINED(Status);
 
     END v_Leitung;
 
@@ -95,7 +95,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF Organisation;
 
       !!@ name = 14901
-      !!@ ilivalid.msg = "Keine Organisation erlaubt"
+      !!@ ilivalid.msg = "Zusätzliche Organisationen werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_Organisation;
@@ -106,7 +106,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF Bauwerkskomponente;
 
       !!@ name = 19901
-      !!@ ilivalid.msg = "Keine Bauwerkskomponente erlaubt"
+      !!@ ilivalid.msg = "Bauwerkskomponente wird ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_Bauwerkskomponente;
@@ -116,8 +116,8 @@ IMPORTS UNQUALIFIED INTERLIS;
       =
       ALL OF Kennlinie_Stuetzpunkt;
 
-      !!@ name = 19901
-      !!@ ilivalid.msg = "Kein Kennlinie_Stuetzpunkt erlaubt"
+      !!@ name = 20901
+      !!@ ilivalid.msg = "Kennlinie_Stuetzpunkt wird ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_Kennlinie_Stuetzpunkt;
@@ -128,7 +128,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Duekeroberhaupt;
 
       !!@ name = 22901
-      !!@ ilivalid.msg = "Keine SK_Duekeroberhaupt erlaubt"
+      !!@ ilivalid.msg = "SK_Duekeroberhaupt: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Duekeroberhaupt;
@@ -139,7 +139,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Einleitstelle;
 
       !!@ name = 23901
-      !!@ ilivalid.msg = "Keine SK_Einleitstelle erlaubt"
+      !!@ ilivalid.msg = "SK_Einleitstelle: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Einleitstelle;
@@ -150,7 +150,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Pumpwerk;
                 
       !!@ name = 24901
-      !!@ ilivalid.msg = "Keine SK_Pumpwerk erlaubt"
+      !!@ ilivalid.msg = "SK_Pumpwerk: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Pumpwerk;
@@ -161,7 +161,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Regenrueckhaltebecken_kanal;
 
       !!@ name = 25901
-      !!@ ilivalid.msg = "Keine SK_Regenrueckhaltebecken_kanal erlaubt"
+      !!@ ilivalid.msg = "SK_Regenrueckhaltebecken_kanal: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Regenrueckhaltebecken_kanal;
@@ -172,7 +172,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Regenueberlauf;
 
       !!@ name = 26901
-      !!@ ilivalid.msg = "Keine SK_Regenueberlauf erlaubt"
+      !!@ ilivalid.msg = "SK_Regenueberlauf: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Regenueberlauf;
@@ -183,7 +183,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Regenueberlaufbecken;
 
       !!@ name = 27901
-      !!@ ilivalid.msg = "Keine SK_Regenueberlaufbecken erlaubt"
+      !!@ ilivalid.msg = "SK_Regenueberlaufbecken: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Regenueberlaufbecken;
@@ -194,7 +194,7 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Trennbauwerk;
 
       !!@ name = 28901
-      !!@ ilivalid.msg = "Keine SK_Trennbauwerk erlaubt"
+      !!@ ilivalid.msg = "SK_Trennbauwerk: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
 
     END v_SK_Trennbauwerk;
@@ -205,11 +205,11 @@ IMPORTS UNQUALIFIED INTERLIS;
       ALL OF SK_Uebrige;
 
       !!@ name = 29901
-      !!@ ilivalid.msg = "Keine SK_Uebrige erlaubt"
+      !!@ ilivalid.msg = "SK_Uebrige: Stammkarten werden ignoriert"
       SET CONSTRAINT INTERLIS.objectCount(ALL)==0; 
       
     END v_SK_Uebrige;
 
   END VSADSSMini_Validierung;
 
-END VSADSSMINI_2020_LV95_Validierung_IPW_20220624.
+END VSADSSMINI_2020_LV95_Validierung_IPW_20230207.
