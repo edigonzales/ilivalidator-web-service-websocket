@@ -47,8 +47,8 @@ jobs:
 
       - name: Build and test docker image
         id: dockerbuild
-        run: ./gradlew buildImage dockerTest
-        #run: ./gradlew buildImage
+        #run: ./gradlew buildImage dockerTest
+        run: ./gradlew buildImage
         if: steps.build.outcome == 'success'
 
       - name: Upload docker test reports

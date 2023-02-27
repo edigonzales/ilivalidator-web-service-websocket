@@ -40,6 +40,9 @@ repositories {
     maven { url "https://jars.interlis.ch/" }
 }
 
+// Seit ilivalidator 1.13.2 funktioniert das nicht mehr. Er hängt beim Modellsuchen.
+// Scheint aber auch nicht mehr nötig zu sein.
+// Müsste sowieso auch wieder mal die custom functions updaten.
 /*
 configurations.all {
     resolutionStrategy {
