@@ -112,7 +112,7 @@ public abstract class IntegrationTests {
         clientHandler.sendMessage(file);
         clientHandler.sendMessage(file.getName());
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<5; i++) {
             Thread.sleep(10000);
             logger.info("polling: " + String.valueOf(i));            
             

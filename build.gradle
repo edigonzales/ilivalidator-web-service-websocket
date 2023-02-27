@@ -40,19 +40,20 @@ repositories {
     maven { url "https://jars.interlis.ch/" }
 }
 
+/*
 configurations.all {
     resolutionStrategy {
         force 'ch.interlis:ili2c-tool:5.2.3'
         force 'ch.interlis:ili2c-core:5.2.3'    
     }
 }
-
+*/
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'commons-io:commons-io:2.6'  
-    implementation 'ch.interlis:ilivalidator:1.11.15-SNAPSHOT'
+    implementation 'ch.interlis:ilivalidator:1.13.2'
     implementation 'io.github.sogis:ilivalidator-custom-functions:1.1.47'
     implementation platform('software.amazon.awssdk:bom:2.15.33')
     implementation 'software.amazon.awssdk:s3'
