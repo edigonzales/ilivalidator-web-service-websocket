@@ -15,4 +15,4 @@ USER $UID
 EXPOSE 8888
 
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-CMD java -XX:+UseParallelGC -XX:MaxRAMPercentage=80.0 -jar application.jar
+CMD java -XX:MaxRAMPercentage=80.0 -XX:+UseG1GC -jar application.jar
