@@ -69,7 +69,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_BJSVBAU }}
           password: ${{ secrets.DOCKER_BJSVBAU_TOKEN }}
-        if: ${{ (github.ref == 'refs/heads/master') && (github.event_name != 'pull_request') && !env.ACT }}
+        if: ${{ (github.event_name != 'pull_request') && !env.ACT }}
 
       - name: Multi-platform build and push
         run: ./gradlew buildAndPushImages
